@@ -34,5 +34,6 @@ networks:
     driver: bridge
 
 volumes:
-  app-data:
   db-data:
+    driver: local
+  app-data:
