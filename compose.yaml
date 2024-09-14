@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16.4-alpine3.20
+    container_name: postgres
+    environment:
+      POSTGRES_USER: pepenacho
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: eco_db
+    ports:
+      - "5431:5431"
+    networks:
+      - app-network
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-boot-microservices-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - app-network
+    volumes:
+      - app-data:/data
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/eco_db
+      SPRING_DATASOURCE_USERNAME: pepenacho
+      SPRING_DATASOURCE_PASSWORD: 1234
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
+  app-data:
+    driver: local
