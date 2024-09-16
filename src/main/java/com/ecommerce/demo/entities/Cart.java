@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "cart")
@@ -13,7 +14,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
@@ -31,7 +32,7 @@ public class Cart {
     @Column(name = "is_checked_out", nullable = false)
     private Boolean isCheckedOut;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_address_id")
     private Address shippingAddress;
 
@@ -46,6 +47,9 @@ public class Cart {
 
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT now()")
     private ZonedDateTime updatedAt;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CartItem> items;
 
     public Long getId() {
         return id;
@@ -135,6 +139,14 @@ public class Cart {
         this.updatedAt = updatedAt;
     }
 
+    public Set<CartItem> getItems() {
+        return items;
+    }
+
+    public void setItems(Set<CartItem> items) {
+        this.items = items;
+    }
+
     @Override
     public String toString() {
         return "Cart{" +
@@ -149,6 +161,7 @@ public class Cart {
                 ", expiresAt=" + expiresAt +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", items=" + items +
                 '}';
     }
 }

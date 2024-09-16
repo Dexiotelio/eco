@@ -3,7 +3,6 @@ package com.ecommerce.demo.entities;
 import com.ecommerce.demo.enums.Gender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import org.springframework.core.annotation.Order;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
