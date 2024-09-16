@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "Clients")
@@ -54,6 +55,10 @@ public class Client {
 
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT now()")
     private ZonedDateTime updatedAt;
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("streetNumber ASC")
+    private Set<Address> addresses;
 
     public Long getId() {
         return id;
@@ -135,6 +140,14 @@ public class Client {
         this.updatedAt = updatedAt;
     }
 
+    public Set<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(Set<Address> addresses) {
+        this.addresses = addresses;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -148,6 +161,7 @@ public class Client {
                 ", gender=" + gender +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", addresses=" + addresses +
                 '}';
     }
 }

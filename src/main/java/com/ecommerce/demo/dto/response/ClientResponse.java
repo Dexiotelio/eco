@@ -23,6 +23,10 @@ public class ClientResponse {
         public Builder email(String email) { this.email = email; return this; }
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
+
+        public ClientResponse build() {
+            return new ClientResponse(this);
+        }
     }
 
     private final Long id;
