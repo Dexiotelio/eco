@@ -3,8 +3,11 @@ package com.ecommerce.demo.entities;
 import com.ecommerce.demo.enums.Gender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.core.annotation.Order;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -59,6 +62,10 @@ public class Client {
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("streetNumber ASC")
     private Set<Address> addresses;
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("createdAt")
+    private List<Cart> carts = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -148,6 +155,14 @@ public class Client {
         this.addresses = addresses;
     }
 
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -162,6 +177,7 @@ public class Client {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", addresses=" + addresses +
+                ", carts=" + carts +
                 '}';
     }
 }
