@@ -1,4 +1,4 @@
-package com.ecommerce.demo.util.DAO;
+package com.ecommerce.demo.util.dao;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,28 +28,33 @@ public abstract class AbstractJpaDAO<T extends Serializable> implements GenericD
 
     @Override
     public T read(Long id) {
-        return null;
+        return entityManager.find(entityClass, id);
     }
 
     @Override
     @Transactional
     public void update(T entity) {
-
+        entityManager.merge(entity);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-
+        T entity = entityManager.find(entityClass, id);
+        if (entity != null) {
+            entityManager.remove(entity);
+        }
     }
 
     @Override
     public Optional<T> findById(Long id) {
-        return Optional.empty();
+        T entity = entityManager.find(entityClass, id);
+        return Optional.ofNullable(entity);
     }
 
     @Override
     public List<T> findAll() {
-        return List.of();
+        String jpql = "SELECT e FROM " + entityClass.getName() + " e";
+        return entityManager.createQuery(jpql, entityClass).getResultList();
     }
 }

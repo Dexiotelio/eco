@@ -6,7 +6,7 @@ CREATE TABLE client (
     username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    age INT CHECK (age > 18),
+    age INT CHECK (age >= 18),
     gender TEXT CHECK (gender IN ('male', 'female', 'other')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
