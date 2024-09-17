@@ -6,6 +6,28 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 
 public class ClientRequest implements Serializable {
+    public static class Builder {
+        private Long id;
+        private String firstname;
+        private String lastname;
+        private String username;
+        private String email;
+        private String passwond;
+        private Integer age;
+        private Gender gender;
+
+        public Builder id(Long id) { this.id = id; return this; }
+        public Builder firstname(String firstname) { this.firstname = firstname; return this; }
+        public Builder lastname(String lastname) { this.lastname = lastname; return this; }
+        public Builder username(String username) { this.username = username; return this;}
+        public Builder email(String email) { this.email = email; return this; }
+        public Builder age(Integer age) { this.age = age; return this; }
+        public Builder gender(Gender gender) { this.gender = gender; return this; }
+
+        public ClientRequest build() {
+            return new ClientRequest(this);
+        }
+    }
 
     @NotBlank(message = "First name is required")
     @Size(max = 50, message = "First name cannot exceed 50 characters")
@@ -34,6 +56,16 @@ public class ClientRequest implements Serializable {
 
     @NotNull(message = "Gender is required")
     private Gender gender;
+
+    public ClientRequest(Builder builder) {
+        this.firstname = builder.firstname;
+        this.lastname = builder.lastname;
+        this.username = builder.username;
+        this.email = builder.email;
+        this.password = builder.passwond;
+        this.age = builder.age;
+        this.gender = builder.gender;
+    }
 
     public @NotBlank(message = "First name is required") @Size(max = 50, message = "First name cannot exceed 50 characters") String getFirstname() {
         return firstname;
