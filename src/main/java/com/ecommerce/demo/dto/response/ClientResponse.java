@@ -13,6 +13,8 @@ public class ClientResponse {
         private String email;
         private Integer age;
         private Gender gender;
+        private ZonedDateTime createdAt;
+        private ZonedDateTime updatedAt;
 
         public Builder id(Long id) { this.id = id; return this; }
         public Builder firstname(String firstname) { this.firstname = firstname; return this; }
@@ -21,6 +23,8 @@ public class ClientResponse {
         public Builder email(String email) { this.email = email; return this; }
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
+        public Builder created(ZonedDateTime createdAt) {this.createdAt = createdAt; return this; }
+        public Builder update(ZonedDateTime updatedAt) {this.updatedAt = updatedAt; return this; }
 
         public ClientResponse build() {
             return new ClientResponse(this);
