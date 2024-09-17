@@ -19,7 +19,7 @@ public class ClientResponse {
         public Builder id(Long id) { this.id = id; return this; }
         public Builder firstname(String firstname) { this.firstname = firstname; return this; }
         public Builder lastname(String lastname) { this.lastname = lastname; return this; }
-        public Builder username(String username) { this.lastname = username; return this;}
+        public Builder username(String username) { this.username = username; return this;}
         public Builder email(String email) { this.email = email; return this; }
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
