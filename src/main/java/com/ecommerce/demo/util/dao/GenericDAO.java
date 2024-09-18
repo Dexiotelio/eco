@@ -1,5 +1,7 @@
 package com.ecommerce.demo.util.dao;
 
+import com.ecommerce.demo.dto.response.ClientResponse;
+
 import java.util.List;
 import java.util.Optional;
 

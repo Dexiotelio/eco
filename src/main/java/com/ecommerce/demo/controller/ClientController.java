@@ -5,6 +5,7 @@ import com.ecommerce.demo.dto.response.ClientResponse;
 import com.ecommerce.demo.services.ClientServicesImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ public class ClientController {
     @PostMapping("/create")
     public ResponseEntity<?> createClient(@Valid @RequestBody ClientRequest request) {
         ClientResponse response = clientServices.createClient(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping

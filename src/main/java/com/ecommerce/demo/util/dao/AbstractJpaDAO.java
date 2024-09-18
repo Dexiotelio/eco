@@ -17,12 +17,12 @@ public abstract class AbstractJpaDAO<T extends Serializable> implements GenericD
 
     protected AbstractJpaDAO(Class<T> entityClass) {
         this.entityClass = entityClass;
-
     }
 
     @Override
     @Transactional
     public void save(T entity) {
+
         entityManager.persist(entity);
     }
 
