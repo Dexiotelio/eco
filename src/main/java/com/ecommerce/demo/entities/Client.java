@@ -92,6 +92,9 @@ public class Client implements Serializable {
     }
 
     public static Client toClientResponse(ClientRequest request) {
+        if (request == null) {
+            return null;
+        }
         return new Client.Builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
