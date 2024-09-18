@@ -22,7 +22,6 @@ public abstract class AbstractJpaDAO<T extends Serializable> implements GenericD
     @Override
     @Transactional
     public void save(T entity) {
-
         entityManager.persist(entity);
     }
 

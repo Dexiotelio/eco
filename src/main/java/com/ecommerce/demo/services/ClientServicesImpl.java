@@ -24,9 +24,19 @@ public class ClientServicesImpl implements ClientServices {
     @Transactional
     public ClientResponse createClient(ClientRequest request) {
         final Optional<Client> clientExists = genericJpaDao.findById(request.getId());
-        if (clientExists.isEmpty()) {
+        if (clientExists.isPresent()) {
             return null;
         }
+        final Client client = Client.toClientResponse(request);
+        genericJpaDao.save(client);
+
+        final Optional<Client> persistentClient = genericJpaDao.findById(client.getId());
+        if (persistentClient.isEmpty()) {
+            return null;
+        }
+        // si el client ha sido persistido
+        Client clientCreated = persistentClient.get();
+        return ClientResponse.toClientResponse(clientCreated);
     }
 
     @Override
