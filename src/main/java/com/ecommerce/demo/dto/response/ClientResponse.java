@@ -1,5 +1,6 @@
 package com.ecommerce.demo.dto.response;
 
+import com.ecommerce.demo.entities.Client;
 import com.ecommerce.demo.enums.Gender;
 
 import java.time.ZonedDateTime;
@@ -23,8 +24,8 @@ public class ClientResponse {
         public Builder email(String email) { this.email = email; return this; }
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
-        public Builder created(ZonedDateTime createdAt) {this.createdAt = createdAt; return this; }
-        public Builder update(ZonedDateTime updatedAt) {this.updatedAt = updatedAt; return this; }
+        public Builder createdAt(ZonedDateTime createdAt) {this.createdAt = createdAt; return this; }
+        public Builder updatedAt(ZonedDateTime updatedAt) {this.updatedAt = updatedAt; return this; }
 
         public ClientResponse build() {
             return new ClientResponse(this);
@@ -51,6 +52,19 @@ public class ClientResponse {
         this.gender = builder.gender;
         this.createdAt = builder.createdAt;
         this.updatedAt = builder.updatedAt;
+    }
+
+    public static ClientResponse toClientResponse(Client client) {
+        return new Builder()
+                .firstname(client.getFirstname())
+                .lastname(client.getLastname())
+                .username(client.getUsername())
+                .email(client.getEmail())
+                .age(client.getAge())
+                .gender(client.getGender())
+                .createdAt(client.getCreatedAt())
+                .updatedAt(client.getUpdatedAt())
+                .build();
     }
 
     public Long getId() {
