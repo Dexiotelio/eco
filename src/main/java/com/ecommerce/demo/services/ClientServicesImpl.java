@@ -34,7 +34,6 @@ public class ClientServicesImpl implements ClientServices {
         if (persistentClient.isEmpty()) {
             return null;
         }
-        // si el client ha sido persistido
         Client clientCreated = persistentClient.get();
         return ClientResponse.toClientResponse(clientCreated);
     }
