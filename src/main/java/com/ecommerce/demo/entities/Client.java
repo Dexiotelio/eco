@@ -4,6 +4,9 @@ import com.ecommerce.demo.dto.request.ClientRequest;
 import com.ecommerce.demo.enums.Gender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -13,6 +16,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Clients")
+@EntityListeners(AuditingEntityListener.class)
 public class Client implements Serializable {
     public static class Builder {
         private Long id;
@@ -79,10 +83,12 @@ public class Client implements Serializable {
     @NotNull(message = "Gender is required")
     private Gender gender;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT now()")
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private ZonedDateTime createdAt;
 
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT now()")
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
     private ZonedDateTime updatedAt;
 
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
