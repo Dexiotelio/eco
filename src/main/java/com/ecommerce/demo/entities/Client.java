@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "Clients")
+@Table(name = "Clients",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"username", "email"}))
 @EntityListeners(AuditingEntityListener.class)
 public class Client implements Serializable {
     public static class Builder {
