@@ -18,8 +18,8 @@ import java.util.Set;
 @Table(name = "Clients",
         uniqueConstraints = @UniqueConstraint(columnNames = {"username", "email"}),
         indexes = {
-            @Index(name = "idx_firstname", columnList = "firstname"),
-            @Index(name = "idx_lastname", columnList = "lastname"),
+            @Index(name = "idx_firstname", columnList = "firstName"),
+            @Index(name = "idx_lastname", columnList = "lastName"),
             @Index(name = "idx_age",  columnList = "age"),
             @Index(name = "idx_created_at", columnList = "createdAt")
         })
@@ -27,9 +27,9 @@ import java.util.Set;
 public class Client implements Serializable {
     public static class Builder {
         private Long id;
-        private String firstname;
-        private String lastname;
-        private String username;
+        private String firstName;
+        private String lastName;
+        private String userName;
         private String email;
         private Integer age;
         private Gender gender;
@@ -37,9 +37,9 @@ public class Client implements Serializable {
         private ZonedDateTime updatedAt;
 
         public Builder id(Long id) { this.id = id; return this; }
-        public Builder firstname(String firstname) { this.firstname = firstname; return this; }
-        public Builder lastname(String lastname) { this.lastname = lastname; return this; }
-        public Builder username(String username) { this.username = username; return this;}
+        public Builder firstName(String firstName) { this.firstName = firstName; return this; }
+        public Builder lastName(String lastName) { this.lastName = lastName; return this; }
+        public Builder userName(String userName) { this.userName = userName; return this;}
         public Builder email(String email) { this.email = email; return this; }
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
@@ -57,18 +57,18 @@ public class Client implements Serializable {
     @Column(nullable = false)
     @NotBlank(message = "First name is required")
     @Size(max = 50, message = "First name cannot exceed 50 characters")
-    private String firstname;
+    private String firstName;
 
     @Column(nullable = false)
     @NotBlank(message = "Last name is required")
     @Size(max = 50, message = "Last name cannot exceed 50 characters")
-    private String lastname;
+    private String lastName;
 
     @Column(nullable = false, unique = true)
     @NotBlank(message = "Username is required")
     @Size(max = 30, message = "Username cannot exceed 30 characters")
     @Pattern(regexp = "^\\w+$", message = "Username can only contain alphanumeric characters and underscores")
-    private String username;
+    private String userName;
 
     @Column(nullable = false, unique = true)
     @NotBlank(message = "Email is required")
@@ -90,6 +90,11 @@ public class Client implements Serializable {
     @NotNull(message = "Gender is required")
     private Gender gender;
 
+    @Column(nullable = false)
+    @NotBlank(message = "Phone is required")
+    @Size(max = 20, message = "Phone cannot exceed 20 characters")
+    private String phone;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private ZonedDateTime createdAt;
@@ -108,9 +113,9 @@ public class Client implements Serializable {
 
     public Client(Builder builder) {
         this.id = builder.id;
-        this.firstname = builder.firstname;
-        this.lastname = builder.lastname;
-        this.username = builder.username;
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.userName = builder.userName;
         this.email = builder.email;
         this.age = builder.age;
         this.gender = builder.gender;
@@ -123,9 +128,9 @@ public class Client implements Serializable {
             return null;
         }
         return new Client.Builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .username(request.getUsername())
+                .firstName(request.getFirstname())
+                .lastName(request.getLastname())
+                .userName(request.getUsername())
                 .email(request.getEmail())
                 .age(request.getAge())
                 .gender(request.getGender())
@@ -140,76 +145,76 @@ public class Client implements Serializable {
         this.id = id;
     }
 
-    public @NotBlank(message = "First name is required") @Size(max = 50, message = "First name cannot exceed 50 characters") String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(@NotBlank(message = "First name is required") @Size(max = 50, message = "First name cannot exceed 50 characters") String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public @NotBlank(message = "Last name is required") @Size(max = 50, message = "Last name cannot exceed 50 characters") String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(@NotBlank(message = "Last name is required") @Size(max = 50, message = "Last name cannot exceed 50 characters") String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public @NotBlank(message = "Username is required") @Size(max = 30, message = "Username cannot exceed 30 characters") @Pattern(regexp = "^\\w+$", message = "Username can only contain alphanumeric characters and underscores") String getUsername() {
-        return username;
+    public String getUsername() {
+        return userName;
     }
 
-    public void setUsername(@NotBlank(message = "Username is required") @Size(max = 30, message = "Username cannot exceed 30 characters") @Pattern(regexp = "^\\w+$", message = "Username can only contain alphanumeric characters and underscores") String username) {
-        this.username = username;
+    public void setUsername(String username) {
+        this.userName = username;
     }
 
-    public @NotBlank(message = "Email is required") @Email(message = "Email should be valid") String getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(@NotBlank(message = "Email is required") @Email(message = "Email should be valid") String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public @NotBlank(message = "Password is required") @Size(min = 8, message = "Password must be at least 8 characters long") String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(@NotBlank(message = "Password is required") @Size(min = 8, message = "Password must be at least 8 characters long") String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public @NotNull(message = "Age is required") @Min(value = 19, message = "Age must be greater than 18") Integer getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(@NotNull(message = "Age is required") @Min(value = 19, message = "Age must be greater than 18") Integer age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 
-    public @NotNull(message = "Gender is required") Gender getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(@NotNull(message = "Gender is required") Gender gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(ZonedDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public ZonedDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(ZonedDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public Set<Address> getAddresses() {
@@ -232,16 +237,14 @@ public class Client implements Serializable {
     public String toString() {
         return "Client{" +
                 "id=" + id +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", username='" + userName + '\'' +
                 ", email='" + email + '\'' +
                 ", age=" + age +
                 ", gender=" + gender +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", addresses=" + addresses +
-                ", carts=" + carts +
                 '}';
     }
 }
