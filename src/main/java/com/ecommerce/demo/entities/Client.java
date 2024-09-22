@@ -16,7 +16,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Clients",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"username", "email"}))
+        uniqueConstraints = @UniqueConstraint(columnNames = {"username", "email"}),
+        indexes = {
+            @Index(name = "idx_firstname", columnList = "firstname"),
+            @Index(name = "idx_lastname", columnList = "lastname"),
+            @Index(name = "idx_age",  columnList = "age"),
+            @Index(name = "idx_created_at", columnList = "createdAt")
+        })
 @EntityListeners(AuditingEntityListener.class)
 public class Client implements Serializable {
     public static class Builder {
