@@ -5,7 +5,12 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "address")
+@Table(name = "address",
+        indexes = {
+            @Index(name = "idx_city", columnList = "city"),
+            @Index(name = "idx_state", columnList = "state"),
+            @Index(name = "idx_country", columnList = "country")
+        })
 public class Address implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,11 +60,6 @@ public class Address implements Serializable {
     @Size(max = 50, message = "Country cannot exceed 50 characters")
     private String country;
 
-    @Column(nullable = false)
-    @NotBlank(message = "Phone is required")
-    @Size(max = 20, message = "Phone cannot exceed 20 characters")
-    private String phone;
-
     @Column(name = "address_type", nullable = false)
     @NotBlank(message = "Address type is required")
     @Size(max = 20, message = "Address type cannot exceed 20 characters")
@@ -81,83 +81,75 @@ public class Address implements Serializable {
         this.client = client;
     }
 
-    public @NotBlank(message = "Street is required") @Size(max = 100, message = "Street cannot exceed 100 characters") String getStreet() {
+    public String getStreet() {
         return street;
     }
 
-    public void setStreet(@NotBlank(message = "Street is required") @Size(max = 100, message = "Street cannot exceed 100 characters") String street) {
+    public void setStreet(String street) {
         this.street = street;
     }
 
-    public @NotBlank(message = "Street number is required") @Size(max = 10, message = "Street number cannot exceed 10 characters") String getStreetNumber() {
+    public String getStreetNumber() {
         return streetNumber;
     }
 
-    public void setStreetNumber(@NotBlank(message = "Street number is required") @Size(max = 10, message = "Street number cannot exceed 10 characters") String streetNumber) {
+    public void setStreetNumber(String streetNumber) {
         this.streetNumber = streetNumber;
     }
 
-    public @Size(max = 10, message = "Apartment number cannot exceed 10 characters") String getApartmentNumber() {
+    public String getApartmentNumber() {
         return apartmentNumber;
     }
 
-    public void setApartmentNumber(@Size(max = 10, message = "Apartment number cannot exceed 10 characters") String apartmentNumber) {
+    public void setApartmentNumber(String apartmentNumber) {
         this.apartmentNumber = apartmentNumber;
     }
 
-    public @NotBlank(message = "Neighborhood is required") @Size(max = 50, message = "Neighborhood cannot exceed 50 characters") String getNeighborhood() {
+    public String getNeighborhood() {
         return neighborhood;
     }
 
-    public void setNeighborhood(@NotBlank(message = "Neighborhood is required") @Size(max = 50, message = "Neighborhood cannot exceed 50 characters") String neighborhood) {
+    public void setNeighborhood(String neighborhood) {
         this.neighborhood = neighborhood;
     }
 
-    public @NotBlank(message = "City is required") @Size(max = 50, message = "City cannot exceed 50 characters") String getCity() {
+    public String getCity() {
         return city;
     }
 
-    public void setCity(@NotBlank(message = "City is required") @Size(max = 50, message = "City cannot exceed 50 characters") String city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
-    public @NotBlank(message = "State is required") @Size(max = 50, message = "State cannot exceed 50 characters") String getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(@NotBlank(message = "State is required") @Size(max = 50, message = "State cannot exceed 50 characters") String state) {
+    public void setState(String state) {
         this.state = state;
     }
 
-    public @NotBlank(message = "Postal code is required") @Size(max = 20, message = "Postal code cannot exceed 20 characters") String getPostalCode() {
+    public String getPostalCode() {
         return postalCode;
     }
 
-    public void setPostalCode(@NotBlank(message = "Postal code is required") @Size(max = 20, message = "Postal code cannot exceed 20 characters") String postalCode) {
+    public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 
-    public @NotBlank(message = "Country is required") @Size(max = 50, message = "Country cannot exceed 50 characters") String getCountry() {
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry(@NotBlank(message = "Country is required") @Size(max = 50, message = "Country cannot exceed 50 characters") String country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
-    public @NotBlank(message = "Phone is required") @Size(max = 20, message = "Phone cannot exceed 20 characters") String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(@NotBlank(message = "Phone is required") @Size(max = 20, message = "Phone cannot exceed 20 characters") String phone) {
-        this.phone = phone;
-    }
-
-    public @NotBlank(message = "Address type is required") @Size(max = 20, message = "Address type cannot exceed 20 characters") String getAddressType() {
+    public String getAddressType() {
         return addressType;
     }
 
-    public void setAddressType(@NotBlank(message = "Address type is required") @Size(max = 20, message = "Address type cannot exceed 20 characters") String addressType) {
+    public void setAddressType(String addressType) {
         this.addressType = addressType;
     }
 
@@ -165,7 +157,6 @@ public class Address implements Serializable {
     public String toString() {
         return "Address{" +
                 "id=" + id +
-                ", client=" + client +
                 ", street='" + street + '\'' +
                 ", streetNumber='" + streetNumber + '\'' +
                 ", apartmentNumber='" + apartmentNumber + '\'' +
@@ -174,7 +165,6 @@ public class Address implements Serializable {
                 ", state='" + state + '\'' +
                 ", postalCode='" + postalCode + '\'' +
                 ", country='" + country + '\'' +
-                ", phone='" + phone + '\'' +
                 ", addressType='" + addressType + '\'' +
                 '}';
     }
