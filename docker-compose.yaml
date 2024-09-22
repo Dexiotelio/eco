@@ -9,12 +9,13 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5431:5431"
+      - "5432:5432"
     networks:
       - app-network
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./db:/docker-entrypoint-init db.d
+      - ./src:/app/src
+      - ./pom.xml:/app/pom.xml
 
   app:
     build:
@@ -30,9 +31,11 @@ services:
     volumes:
       - app-data:/data
     environment:
-      SPRING_BOOT_POSTGRES_DB: jdbc:postgresql://db:5431/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: 'true'
 
 networks:
   app-network:
