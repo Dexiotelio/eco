@@ -16,10 +16,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Clients",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"username", "email"}),
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_name", "email"}),
         indexes = {
-            @Index(name = "idx_firstname", columnList = "firstName"),
-            @Index(name = "idx_lastname", columnList = "lastName"),
+            @Index(name = "idx_firstname", columnList = "first_name"),
+            @Index(name = "idx_lastname", columnList = "last_name"),
+            @Index(name = "idx_username", columnList = "user_name"),
             @Index(name = "idx_age",  columnList = "age"),
             @Index(name = "idx_created_at", columnList = "createdAt")
         })
@@ -54,23 +55,23 @@ public class Client implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "first_name")
     @NotBlank(message = "First name is required")
     @Size(max = 50, message = "First name cannot exceed 50 characters")
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "last_name")
     @NotBlank(message = "Last name is required")
     @Size(max = 50, message = "Last name cannot exceed 50 characters")
     private String lastName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, name = "user_name")
     @NotBlank(message = "Username is required")
     @Size(max = 30, message = "Username cannot exceed 30 characters")
     @Pattern(regexp = "^\\w+$", message = "Username can only contain alphanumeric characters and underscores")
     private String userName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     private String email;
