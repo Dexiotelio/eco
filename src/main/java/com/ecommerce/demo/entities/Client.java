@@ -1,141 +1,69 @@
 package com.ecommerce.demo.entities;
 
-import com.ecommerce.demo.dto.request.ClientRequest;
 import com.ecommerce.demo.enums.Gender;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.ecommerce.demo.enums.Role;
 
-import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
 
-@Entity
-@Table(name = "Clients",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_name", "email"}),
-        indexes = {
-            @Index(name = "idx_firstname", columnList = "first_name"),
-            @Index(name = "idx_lastname", columnList = "last_name"),
-            @Index(name = "idx_username", columnList = "user_name"),
-            @Index(name = "idx_age",  columnList = "age"),
-            @Index(name = "idx_created_at", columnList = "createdAt")
-        })
-@EntityListeners(AuditingEntityListener.class)
-public class Client implements Serializable {
-    public static class Builder {
-        private Long id;
-        private String firstName;
-        private String lastName;
-        private String userName;
-        private String email;
-        private Integer age;
-        private Gender gender;
-        private ZonedDateTime createdAt;
-        private ZonedDateTime updatedAt;
-
-        public Builder id(Long id) { this.id = id; return this; }
-        public Builder firstName(String firstName) { this.firstName = firstName; return this; }
-        public Builder lastName(String lastName) { this.lastName = lastName; return this; }
-        public Builder userName(String userName) { this.userName = userName; return this;}
-        public Builder email(String email) { this.email = email; return this; }
-        public Builder age(Integer age) { this.age = age; return this; }
-        public Builder gender(Gender gender) { this.gender = gender; return this; }
-        public Builder createdAt(ZonedDateTime createdAt) {this.createdAt = createdAt; return this; }
-        public Builder updatedAt(ZonedDateTime updatedAt) {this.updatedAt = updatedAt; return this; }
-
-        public Client build() {
-            return new Client(this);
-        }
-    }
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class User {
     private Long id;
-
-    @Column(nullable = false, name = "first_name")
-    @NotBlank(message = "First name is required")
-    @Size(max = 50, message = "First name cannot exceed 50 characters")
     private String firstName;
-
-    @Column(nullable = false, name = "last_name")
-    @NotBlank(message = "Last name is required")
-    @Size(max = 50, message = "Last name cannot exceed 50 characters")
     private String lastName;
-
-    @Column(nullable = false, name = "user_name")
-    @NotBlank(message = "Username is required")
-    @Size(max = 30, message = "Username cannot exceed 30 characters")
-    @Pattern(regexp = "^\\w+$", message = "Username can only contain alphanumeric characters and underscores")
     private String userName;
-
-    @Column(nullable = false)
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
     private String email;
-
-    @Column(nullable = false)
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
-
-    @Column(nullable = false)
-    @NotNull(message = "Age is required")
-    @Min(value = 19, message = "Age must be greater than 18")
     private Integer age;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "Gender is required")
     private Gender gender;
-
-    @Column(nullable = false)
-    @NotBlank(message = "Phone is required")
-    @Size(max = 20, message = "Phone cannot exceed 20 characters")
-    private String phone;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    private String[] phones;
+    private Role role;
     private ZonedDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
     private ZonedDateTime updatedAt;
-
-    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("streetNumber ASC")
     private Set<Address> addresses;
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("createdAt")
-    private List<Cart> carts = new ArrayList<>();
-
-    public Client(Builder builder) {
-        this.id = builder.id;
+    public User(Builder builder) {
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.userName = builder.userName;
         this.email = builder.email;
+        this.password = builder.password;
         this.age = builder.age;
         this.gender = builder.gender;
+        this.phones = builder.phones;
+        this.role = builder.role;
         this.createdAt = builder.createdAt;
         this.updatedAt = builder.updatedAt;
     }
 
-    public static Client toClientResponse(ClientRequest request) {
-        if (request == null) {
-            return null;
+    public static class Builder {
+        private String firstName;
+        private String lastName;
+        private String userName;
+        private String email;
+        private String password;
+        private Integer age;
+        private Gender gender;
+        private String[] phones;
+        private Role role;
+        private ZonedDateTime createdAt;
+        private ZonedDateTime updatedAt;
+        private Set<Address> addresses;
+
+        public Builder firstName(String firstName) { this.firstName = firstName; return this; }
+        public Builder lastName(String lastName) { this.lastName = lastName; return this; }
+        public Builder userName(String userName) { this.userName = userName; return this; }
+        public Builder email(String email) { this.email = email; return this; }
+        public Builder password(String password) { this.password = password; return this; }
+        public Builder age(Integer age) { this.age = age; return this; }
+        public Builder gender(Gender gender) { this.gender = gender; return this; }
+        public Builder phones(String[] phones) { this.phones = phones; return this; }
+        public Builder role(Role role) { this.role = role; return this; }
+        public Builder addresses(Set<Address> addresses) { this.addresses = addresses; return this; }
+
+        public User build() {
+            return new User(this);
         }
-        return new Client.Builder()
-                .firstName(request.getFirstname())
-                .lastName(request.getLastname())
-                .userName(request.getUsername())
-                .email(request.getEmail())
-                .age(request.getAge())
-                .gender(request.getGender())
-                .build();
     }
 
     public Long getId() {
@@ -162,12 +90,12 @@ public class Client implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getUsername() {
+    public String getUserName() {
         return userName;
     }
 
-    public void setUsername(String username) {
-        this.userName = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getEmail() {
@@ -202,20 +130,36 @@ public class Client implements Serializable {
         this.gender = gender;
     }
 
-    public String getPhone() {
-        return phone;
+    public String[] getPhones() {
+        return phones;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhones(String[] phones) {
+        this.phones = phones;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
 
+    public void setCreatedAt(ZonedDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public ZonedDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setUpdatedAt(ZonedDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public Set<Address> getAddresses() {
@@ -226,27 +170,22 @@ public class Client implements Serializable {
         this.addresses = addresses;
     }
 
-    public List<Cart> getCarts() {
-        return carts;
-    }
-
-    public void setCarts(List<Cart> carts) {
-        this.carts = carts;
-    }
-
     @Override
     public String toString() {
-        return "Client{" +
+        return "User{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", username='" + userName + '\'' +
+                ", userName='" + userName + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", age=" + age +
                 ", gender=" + gender +
+                ", phones=" + Arrays.toString(phones) +
+                ", role=" + role +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", addresses=" + addresses +
                 '}';
     }
 }
-
