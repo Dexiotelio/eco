@@ -1,84 +1,29 @@
 package com.ecommerce.demo.entities;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import java.io.Serializable;
+import java.time.ZonedDateTime;
 
-@Entity
-@Table(name = "address",
-        indexes = {
-            @Index(name = "idx_city", columnList = "city"),
-            @Index(name = "idx_state", columnList = "state"),
-            @Index(name = "idx_country", columnList = "country")
-        })
-public class Address implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_address")
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
-
-    @Column(nullable = false)
-    @NotBlank(message = "Street is required")
-    @Size(max = 100, message = "Street cannot exceed 100 characters")
+public class Address {
+    private Long userId; 
     private String street;
-
-    @Column(name = "street_number", nullable = false)
-    @NotBlank(message = "Street number is required")
-    @Size(max = 10, message = "Street number cannot exceed 10 characters")
     private String streetNumber;
-
-    @Column(name = "apartment_number")
-    @Size(max = 10, message = "Apartment number cannot exceed 10 characters")
     private String apartmentNumber;
-
-    @Column(nullable = false)
-    @NotBlank(message = "Neighborhood is required")
-    @Size(max = 50, message = "Neighborhood cannot exceed 50 characters")
     private String neighborhood;
-
-    @Column(nullable = false)
-    @NotBlank(message = "City is required")
-    @Size(max = 50, message = "City cannot exceed 50 characters")
     private String city;
-
-    @Column(nullable = false)
-    @NotBlank(message = "State is required")
-    @Size(max = 50, message = "State cannot exceed 50 characters")
     private String state;
-
-    @Column(name = "postal_code", nullable = false)
-    @NotBlank(message = "Postal code is required")
-    @Size(max = 20, message = "Postal code cannot exceed 20 characters")
     private String postalCode;
-
-    @Column(nullable = false)
-    @NotBlank(message = "Country is required")
-    @Size(max = 50, message = "Country cannot exceed 50 characters")
     private String country;
-
-    @Column(name = "address_type", nullable = false)
-    @NotBlank(message = "Address type is required")
-    @Size(max = 20, message = "Address type cannot exceed 20 characters")
     private String addressType;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
 
-    public Long getId() {
-        return id;
+    public Address() {}
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getStreet() {
@@ -153,10 +98,26 @@ public class Address implements Serializable {
         this.addressType = addressType;
     }
 
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(ZonedDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public ZonedDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(ZonedDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Address{" +
-                "id=" + id +
+                "userId=" + userId +
                 ", street='" + street + '\'' +
                 ", streetNumber='" + streetNumber + '\'' +
                 ", apartmentNumber='" + apartmentNumber + '\'' +
