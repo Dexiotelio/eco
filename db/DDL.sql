@@ -1,16 +1,33 @@
 -- Tabla de clientes
-CREATE TABLE client (
-    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    firstname TEXT NOT NULL,
-    lastname TEXT NOT NULL,
-    username TEXT NOT NULL UNIQUE,
-    email TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    age INT CHECK (age >= 18),
-    gender TEXT CHECK (gender IN ('male', 'female', 'other')),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+create table "Users" {
+    id bigint  primary key generated always as identity,
+    firstname text not null,
+    lastname text not null,
+    username text not null unique,
+    age int check (age >= 18),
+    email text not null unique,
+    phones varchar(20)[] not null,
+    password text not null,
+    gender text check (gender in ('male', 'female', 'other')),
+    role text check (role in ("client", 'admin', visitor)) not null,
+    created_at timestamp with time zone default now(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    CONSTRAINT check_phones_size CHECK (array_length(phones, 1) <= 2)
+};
+
+create index idx_client_username on "Users" using btree (username);
+create index idx_client_email on "Users" using btree (email);
+create index idx_client_age on "Users" using btree (age);
+
+-- establecer roles
+create role client;
+create role admin;
+create role visitor;
+
+-- otorgar permisos
+grant select, insert, update on "Users" to client;
+grant select on "Users" to visitor;
+grant all privileges on "Users" to admin;
 
 -- Tabla de direcciones
 CREATE TABLE address (
