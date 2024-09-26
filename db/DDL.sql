@@ -30,23 +30,23 @@ grant select on "Users" to visitor;
 grant all privileges on "Users" to admin;
 
 -- Tabla de direcciones
-CREATE TABLE address (
-    id_address BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    client_id BIGINT REFERENCES client (id) ON DELETE CASCADE,
-    street TEXT NOT NULL,
-    street_number TEXT NOT NULL,
-    apartment_number TEXT,
-    neighborhood TEXT NOT NULL,
-    city TEXT NOT NULL,
-    state TEXT NOT NULL,
-    postal_code TEXT NOT NULL,
-    country TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    address_type TEXT NOT NULL
-);
+create table Address {
+    user_id bigint not null references "Users" (id) on delete cascade,
+    street text not null,
+    street_number text not null,
+    apartment_number text not null,
+    neighborhood text not null,
+    city text not null,
+    state text not null,
+    postal_code text not null,
+    country text not null,
+    create_at timestamp with zone time now(),
+    update_at timestamp with zone time now(),
+};
 
--- Índice en la tabla address
-CREATE INDEX idx_address_client_id ON address USING BTREE (client_id);
+create index idx_address_city on Address using btree (city);
+create index idx_address_state on Address using btree (state);
+create index idx_address_country on Address using btree (country);
 
 -- Tipos de estado del carrito
 CREATE TYPE cart_status AS ENUM ('ACTIVE', 'ABANDONED', 'COMPLETED', 'CANCELLED');
