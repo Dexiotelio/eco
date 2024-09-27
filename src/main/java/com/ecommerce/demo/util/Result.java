@@ -1,21 +1,29 @@
 package com.ecommerce.demo.util;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Result<T> {
     private final T value;
-    private final boolean isSuccees;
-    private final String error;
+    private final boolean isSuccess;
+    private final Set<String> errors;
 
-    private Result(T value, boolean isSuccees, String error ) {
+    private Result(T value, boolean isSuccess, Set<String> errors) {
         this.value = value;
-        this.isSuccees = isSuccees;
-        this.error = error;
+        this.isSuccess = isSuccess;
+        this.errors = errors != null ? new HashSet<>(errors) : Collections.emptySet();
     }
 
     public static <T> Result<T> success(T value) {
         return new Result<>(value, true, null);
     }
 
-    public static <T> Result<T> failure(String error) {
-        return new Result<>(null, false, error);
+    public static <T> Result<T> failure(Set<String> errors) {
+        return new Result<>(null, false, errors);
+    }
+
+    public static  <T> Result<T> failure(String error) {
+        return new Result<>(null, false, Collections.singleton(error));
     }
 }
