@@ -1,11 +1,11 @@
 package com.ecommerce.demo.entities;
 
+import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.enums.Gender;
 import com.ecommerce.demo.enums.Role;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Set;
 
 public class User {
     private Long id;
@@ -20,7 +20,6 @@ public class User {
     private Role role;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
-    private Set<Address> addresses;
 
     public User(Builder builder) {
         this.firstName = builder.firstName;
@@ -48,7 +47,6 @@ public class User {
         private Role role;
         private ZonedDateTime createdAt;
         private ZonedDateTime updatedAt;
-        private Set<Address> addresses;
 
         public Builder firstName(String firstName) { this.firstName = firstName; return this; }
         public Builder lastName(String lastName) { this.lastName = lastName; return this; }
@@ -59,11 +57,24 @@ public class User {
         public Builder gender(Gender gender) { this.gender = gender; return this; }
         public Builder phones(String[] phones) { this.phones = phones; return this; }
         public Builder role(Role role) { this.role = role; return this; }
-        public Builder addresses(Set<Address> addresses) { this.addresses = addresses; return this; }
 
         public User build() {
             return new User(this);
         }
+    }
+
+    public static User toUser(UserRequest request) {
+        return new Builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .userName(request.getUserName())
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .age(request.getAge())
+                .gender(request.getGender())
+                .phones(request.getPhones())
+                .role(request.getRole())
+                .build();
     }
 
     public Long getId() {
@@ -162,14 +173,6 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public Set<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(Set<Address> addresses) {
-        this.addresses = addresses;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -185,7 +188,6 @@ public class User {
                 ", role=" + role +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", addresses=" + addresses +
                 '}';
     }
 }
