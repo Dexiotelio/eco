@@ -1,9 +1,0 @@
-package com.ecommerce.demo.services;
-
-import com.ecommerce.demo.entities.User;
-
-public interface UserWriteRepository {
-    public User create(User user);
-    public User update(User user);
-    public User  delete(User user);
-}

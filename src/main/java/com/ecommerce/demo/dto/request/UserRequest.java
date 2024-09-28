@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 public class UserRequest implements Serializable {
+    @NotNull(message = "Id is required")
+    private final Long id;
 
     @NotBlank(message = "First name is required")
     @Size(max = 50, message = "First name cannot exceed 50 characters")
@@ -43,21 +45,57 @@ public class UserRequest implements Serializable {
     @NotNull(message = "Role is required")
     private final Role role;
 
-    // Constructor
-    public UserRequest(String firstName, String lastName, String userName, String email,
-                       String password, Integer age, Gender gender, String[] phones, Role role) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
-        this.age = age;
-        this.gender = gender;
-        this.phones = phones;
-        this.role = role;
+    @NotNull(message = "Address is required")
+    private final AddressRequest address;
+
+    private UserRequest(Builder builder) {
+        this.id = builder.id;
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.userName = builder.userName;
+        this.email = builder.email;
+        this.password = builder.password;
+        this.age = builder.age;
+        this.gender = builder.gender;
+        this.phones = builder.phones;
+        this.role = builder.role;
+        this.address = builder.address;
     }
 
-    // Getters
+    public static class Builder {
+        private Long id;
+        private String firstName;
+        private String lastName;
+        private String userName;
+        private String email;
+        private String password;
+        private Integer age;
+        private Gender gender;
+        private String[] phones;
+        private Role role;
+        private AddressRequest address;
+
+            public Builder id(Long id) { this.id = id; return this; }
+        public Builder firstName(String firstName) { this.firstName = firstName; return this; }
+        public Builder lastName(String lastName) { this.lastName = lastName; return this; }
+        public Builder userName(String userName) { this.userName = userName; return this; }
+        public Builder email(String email) { this.email = email; return this; }
+        public Builder password(String password) { this.password = password; return this; }
+        public Builder age(Integer age) { this.age = age; return this; }
+        public Builder gender(Gender gender) { this.gender = gender; return this; }
+        public Builder phones(String[] phones) { this.phones = phones; return this; }
+        public Builder role(Role role) { this.role = role; return this; }
+        public Builder address(AddressRequest address) { this.address = address; return this; }
+
+        public UserRequest build() {
+            return new UserRequest(this);
+        }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -94,10 +132,15 @@ public class UserRequest implements Serializable {
         return role;
     }
 
+    public AddressRequest getAddress() {
+        return address;
+    }
+
     @Override
     public String toString() {
         return "UserRequest{" +
-                "firstName='" + firstName + '\'' +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", userName='" + userName + '\'' +
                 ", email='" + email + '\'' +
@@ -106,6 +149,7 @@ public class UserRequest implements Serializable {
                 ", gender=" + gender +
                 ", phones=" + Arrays.toString(phones) +
                 ", role=" + role +
+                ", address=" + address +
                 '}';
     }
 }
