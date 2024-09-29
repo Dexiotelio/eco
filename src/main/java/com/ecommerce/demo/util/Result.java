@@ -15,10 +15,15 @@ public class Result<T> {
         this.errors = errors != null ? new HashSet<>(errors) : Collections.emptySet();
     }
 
+    // succes
     public static <T> Result<T> success(T value) {
         return new Result<>(value, true, null);
     }
 
+    public static Result<Void> success() {
+        return new Result<>(null, true, null);
+    }
+    // failure
     public static <T> Result<T> failure(Set<String> errors) {
         return new Result<>(null, false, errors);
     }
