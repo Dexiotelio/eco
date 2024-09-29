@@ -6,6 +6,7 @@ import com.ecommerce.demo.enums.Role;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 public class User {
     private Long id;
@@ -16,7 +17,7 @@ public class User {
     private String password;
     private Integer age;
     private Gender gender;
-    private String[] phones;
+    private List<String> phones;
     private Role role;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
@@ -43,7 +44,7 @@ public class User {
         private String password;
         private Integer age;
         private Gender gender;
-        private String[] phones;
+        private List<String> phones;
         private Role role;
         private ZonedDateTime createdAt;
         private ZonedDateTime updatedAt;
@@ -55,7 +56,7 @@ public class User {
         public Builder password(String password) { this.password = password; return this; }
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
-        public Builder phones(String[] phones) { this.phones = phones; return this; }
+        public Builder phones(List<String> phones) { this.phones = phones; return this; }
         public Builder role(Role role) { this.role = role; return this; }
 
         public User build() {
@@ -141,11 +142,11 @@ public class User {
         this.gender = gender;
     }
 
-    public String[] getPhones() {
+    public List<String> getPhones() {
         return phones;
     }
 
-    public void setPhones(String[] phones) {
+    public void setPhones(List<String> phones) {
         this.phones = phones;
     }
 
@@ -184,7 +185,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", age=" + age +
                 ", gender=" + gender +
-                ", phones=" + Arrays.toString(phones) +
+                ", phones=" + phones +
                 ", role=" + role +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
