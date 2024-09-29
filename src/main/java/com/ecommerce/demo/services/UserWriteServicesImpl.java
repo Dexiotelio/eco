@@ -55,6 +55,9 @@ public class UserWriteServicesImpl implements UserWriteServices {
                         + String.join(", ", userCreationResult.getErrors()));
             }
         }
+
+        UserResponse userResponse = UserResponse.toUserResponse(user);
+        return Result.success(userResponse);
     }
 
     @Override
