@@ -6,6 +6,8 @@ import jakarta.validation.constraints.*;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public class UserRequest implements Serializable {
     @NotNull(message = "Id is required")
@@ -40,13 +42,13 @@ public class UserRequest implements Serializable {
     private final Gender gender;
 
     @NotNull(message = "Phones are required")
-    private final String[] phones;
+    private final List<String> phones;
 
     @NotNull(message = "Role is required")
     private final Role role;
 
     @NotNull(message = "Address is required")
-    private final AddressRequest address;
+    private final Set<AddressRequest> addresses;
 
     private UserRequest(Builder builder) {
         this.id = builder.id;
@@ -59,7 +61,7 @@ public class UserRequest implements Serializable {
         this.gender = builder.gender;
         this.phones = builder.phones;
         this.role = builder.role;
-        this.address = builder.address;
+        this.addresses = builder.addresses;
     }
 
     public static class Builder {
@@ -71,11 +73,11 @@ public class UserRequest implements Serializable {
         private String password;
         private Integer age;
         private Gender gender;
-        private String[] phones;
+        private List<String> phones;
         private Role role;
-        private AddressRequest address;
+        private Set<AddressRequest> addresses;
 
-            public Builder id(Long id) { this.id = id; return this; }
+        public Builder id(Long id) { this.id = id; return this; }
         public Builder firstName(String firstName) { this.firstName = firstName; return this; }
         public Builder lastName(String lastName) { this.lastName = lastName; return this; }
         public Builder userName(String userName) { this.userName = userName; return this; }
@@ -83,9 +85,9 @@ public class UserRequest implements Serializable {
         public Builder password(String password) { this.password = password; return this; }
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
-        public Builder phones(String[] phones) { this.phones = phones; return this; }
+        public Builder phones(List<String> phones) { this.phones = phones; return this; }
         public Builder role(Role role) { this.role = role; return this; }
-        public Builder address(AddressRequest address) { this.address = address; return this; }
+        public Builder addresses(Set<AddressRequest> addresses) { this.addresses = addresses; return this; }
 
         public UserRequest build() {
             return new UserRequest(this);
@@ -124,17 +126,13 @@ public class UserRequest implements Serializable {
         return gender;
     }
 
-    public String[] getPhones() {
+    public List<String> getPhones() {
         return phones;
     }
 
-    public Role getRole() {
-        return role;
-    }
+    public Role getRole() { return role; }
 
-    public AddressRequest getAddress() {
-        return address;
-    }
+    public Set<AddressRequest> getAddress() { return addresses; }
 
     @Override
     public String toString() {
@@ -147,9 +145,9 @@ public class UserRequest implements Serializable {
                 ", password='" + password + '\'' +
                 ", age=" + age +
                 ", gender=" + gender +
-                ", phones=" + Arrays.toString(phones) +
+                ", phones=" + phones +
                 ", role=" + role +
-                ", address=" + address +
+                ", address=" + addresses +
                 '}';
     }
 }
