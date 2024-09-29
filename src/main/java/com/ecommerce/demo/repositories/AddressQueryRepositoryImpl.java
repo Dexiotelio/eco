@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class AddressQueryRepositoryImpl implements AddressQueryRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -23,14 +25,16 @@ public class AddressQueryRepositoryImpl implements AddressQueryRepository {
                 "AND state = ? AND postal_code = ? AND country = ?)";
 
         return Try.of(() ->
-                        Boolean.TRUE.equals(
+                        Optional.ofNullable(
                                 jdbcTemplate.queryForObject(sql, new Object[]{
                                         addressRequest.getStreet(), addressRequest.getStreetNumber(),
                                         addressRequest.getCity(), addressRequest.getState(),
                                         addressRequest.getPostalCode(), addressRequest.getCountry()
                                 }, Boolean.class)
-                        ))
+                        )
+                        .orElse(false)
+                )
                 .map(Result::success)
-                .onFailure(e -> Result.failure("Error checking address existence: " + e.getMessage()));
+                .recover(e -> Result.failure("Error checking address existence: " + e.getMessage()));
     }
 }
