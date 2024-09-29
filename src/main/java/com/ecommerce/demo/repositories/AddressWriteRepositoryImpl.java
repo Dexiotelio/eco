@@ -27,7 +27,7 @@ public class AddressWriteRepositoryImpl implements AddressWriteRepository {
                     address.getStreetNumber(), address.getApartmentNumber(),
                     address.getNeighborhood(), address.getCity(), address.getState(),
                     address.getPostalCode(), address.getCountry());
-            return Result.success((Void) null);
+            return Result.success();
         }).getOrElseGet(e -> Result.failure("Error creating address: " + e.getMessage()));
     }
 
