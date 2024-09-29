@@ -1,5 +1,7 @@
 package com.ecommerce.demo.entities;
 
+import com.ecommerce.demo.dto.request.AddressRequest;
+
 import java.time.ZonedDateTime;
 
 public class Address {
@@ -12,7 +14,6 @@ public class Address {
     private String state;
     private String postalCode;
     private String country;
-    private String addressType;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
@@ -25,7 +26,6 @@ public class Address {
         this.state = builder.state;
         this.postalCode = builder.postalCode;
         this.country = builder.country;
-        this.addressType = builder.addressType;
         this.createdAt = builder.createdAt;
         this.updatedAt = builder.updatedAt;
     }
@@ -40,7 +40,6 @@ public class Address {
         private String state;
         private String postalCode;
         private String country;
-        private String addressType;
         private ZonedDateTime createdAt;
         private ZonedDateTime updatedAt;
 
@@ -53,13 +52,25 @@ public class Address {
         private Builder state(String state) { this.state = state; return this; }
         private Builder postalCode(String postalCode) { this.postalCode = postalCode; return this; }
         private Builder country(String country) { this.country = country; return this; }
-        private Builder addressType(String addressType) { this.addressType = addressType; return this; }
         private Builder createdAt(ZonedDateTime createdAt) { this.createdAt = createdAt; return this; }
         private Builder updatedAt(ZonedDateTime updatedAt) { this.updatedAt = updatedAt; return this; }
 
         public Address build() {
             return new Address(this);
         }
+    }
+
+    public static Address toAddress(AddressRequest request) {
+        return new Builder()
+                .street(request.getStreet())
+                .streetNumber(request.getStreetNumber())
+                .apartmentNumber(request.getApartmentNumber())
+                .neighborhood(request.getNeighborhood())
+                .city(request.getCity())
+                .state(request.getState())
+                .postalCode(request.getPostalCode())
+                .country(request.getCountry())
+                .build();
     }
 
     public Long getUserId() {
@@ -134,14 +145,6 @@ public class Address {
         this.country = country;
     }
 
-    public String getAddressType() {
-        return addressType;
-    }
-
-    public void setAddressType(String addressType) {
-        this.addressType = addressType;
-    }
-
     public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
@@ -170,7 +173,6 @@ public class Address {
                 ", state='" + state + '\'' +
                 ", postalCode='" + postalCode + '\'' +
                 ", country='" + country + '\'' +
-                ", addressType='" + addressType + '\'' +
                 '}';
     }
 }
