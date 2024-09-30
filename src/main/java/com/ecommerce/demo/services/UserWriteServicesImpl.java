@@ -2,6 +2,7 @@ package com.ecommerce.demo.services;
 
 import com.ecommerce.demo.dto.request.AddressRequest;
 import com.ecommerce.demo.dto.request.UserRequest;
+import com.ecommerce.demo.dto.response.AddressResponse;
 import com.ecommerce.demo.dto.response.UserResponse;
 import com.ecommerce.demo.entities.Address;
 import com.ecommerce.demo.entities.User;
@@ -18,18 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserWriteServicesImpl implements UserWriteServices {
     private final UserWriteRepositoryImpl userWriteRepository;
     private final UserQueryRepositoryImpl userQueryRepository;
-    private final AddressWriteRepositoryImpl addressWriteRepository;
-    private final AddressQueryRepositoryImpl addressQueryRepository;
+    private final AddressWriteServicesImpl addressWriteServices;
 
     @Autowired
     public UserWriteServicesImpl(UserWriteRepositoryImpl userWriteRepository,
                                  UserQueryRepositoryImpl userQueryRepository,
-                                 AddressWriteRepositoryImpl addressWriteRepository,
-                                 AddressQueryRepositoryImpl addressQueryRepository) {
+                                 AddressWriteServicesImpl addressWriteServices
+                                 ) {
         this.userWriteRepository = userWriteRepository;
         this.userQueryRepository = userQueryRepository;
-        this.addressWriteRepository = addressWriteRepository;
-        this.addressQueryRepository = addressQueryRepository;
+        this.addressWriteServices = addressWriteServices;
     }
 
     @Override
@@ -47,13 +46,11 @@ public class UserWriteServicesImpl implements UserWriteServices {
         }
 
         for (AddressRequest addressRequest: request.getAddress()) {
-            Address address = Address.toAddress(addressRequest);
-            Result<Void> addressCreationResult = addressWriteRepository.create(address);
-            if (!addressCreationResult.isSuccess()) {
-                userWriteRepository.delete(user.getId());
-                return Result.failure("Failed to create address: "
-                        + String.join(", ", userCreationResult.getErrors()));
-            }
+           Result<AddressResponse> addressResponseResult = addressWriteServices.create(addressRequest);
+           if (!addressResponseResult.isSuccess()) {
+               return Result.failure("Errors when creating address: " +
+                       String.join(", ", addressResponseResult.getErrors()));
+           }
         }
 
         UserResponse userResponse = UserResponse.toUserResponse(user);
@@ -63,12 +60,10 @@ public class UserWriteServicesImpl implements UserWriteServices {
     @Override
     @Transactional
     public Result<UserResponse> update(UserRequest request) {
-        return Result.success(new UserResponse());
     }
 
     @Override
     @Transactional
     public Result<UserResponse> delete(UserRequest request) {
-        return Result.success(new UserResponse());
     }
 }
