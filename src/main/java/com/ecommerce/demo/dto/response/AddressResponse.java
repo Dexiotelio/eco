@@ -1,6 +1,6 @@
 package com.ecommerce.demo.dto.response;
 
-import java.time.ZonedDateTime;
+import com.ecommerce.demo.entities.Address;
 
 public class AddressResponse {
     private final String street;
@@ -45,6 +45,20 @@ public class AddressResponse {
         public AddressResponse build() {
             return new AddressResponse(this);
         }
+    }
+
+    public static AddressResponse toAddressResponse(Address address) {
+        return new Builder()
+                .street(address.getStreet())
+                .streetNumber(address.getStreetNumber())
+                .apartmentNumber(address.getApartmentNumber())
+                .neighborhood(address.getNeighborhood())
+                .city(address.getCity())
+                .state(address.getState())
+                .postalCode(address.getPostalCode())
+                .country(address.getCountry())
+                .build();
+
     }
 
     public String getStreet() {
