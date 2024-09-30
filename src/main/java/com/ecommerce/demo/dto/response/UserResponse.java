@@ -3,23 +3,20 @@ package com.ecommerce.demo.dto.response;
 import com.ecommerce.demo.entities.User;
 import com.ecommerce.demo.enums.Gender;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class UserResponse {
-    private String firstName;
-    private String lastName;
-    private String userName;
-    private String email;
-    private List<String> phones;
-    private Gender gender;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private final String firstName;
+    private final String lastName;
+    private final String userName;
+    private final String email;
+    private final List<String> phones;
+    private final Gender gender;
+    private final ZonedDateTime createdAt;
+    private final ZonedDateTime updatedAt;
 
-    public UserResponse() {}
-
-    public UserResponse(Builder builder) {
+    private UserResponse(Builder builder) {
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.userName = builder.userName;
@@ -37,8 +34,8 @@ public class UserResponse {
         private String email;
         private List<String> phones;
         private Gender gender;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private ZonedDateTime createdAt;
+        private ZonedDateTime updatedAt;
 
         public Builder firstName(String firstName) { this.firstName = firstName; return this; }
         public Builder lastName(String lastName) { this.lastName = lastName; return this; }
@@ -46,6 +43,8 @@ public class UserResponse {
         public Builder email(String email) { this.email = email; return this; }
         public Builder phones(List<String> phones) { this.phones = phones; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
+        public Builder createdAt(ZonedDateTime createdAt) { this.createdAt = createdAt; return this; }
+        public Builder updatedAt(ZonedDateTime updatedAt) { this.updatedAt = updatedAt; return this; }
 
         public UserResponse build() {
             return new UserResponse(this);
@@ -60,72 +59,20 @@ public class UserResponse {
                 .email(user.getEmail())
                 .phones(user.getPhones())
                 .gender(user.getGender())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<String> getPhones() {
-        return phones;
-    }
-
-    public void setPhones(List<String> phones) {
-        this.phones = phones;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    // Getters
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public String getUserName() { return userName; }
+    public String getEmail() { return email; }
+    public List<String> getPhones() { return phones; }
+    public Gender getGender() { return gender; }
+    public ZonedDateTime getCreatedAt() { return createdAt; }
+    public ZonedDateTime getUpdatedAt() { return updatedAt; }
 
     @Override
     public String toString() {
