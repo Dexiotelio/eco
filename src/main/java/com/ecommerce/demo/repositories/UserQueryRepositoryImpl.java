@@ -1,6 +1,7 @@
 package com.ecommerce.demo.repositories;
 
 import com.ecommerce.demo.entities.User;
+import com.ecommerce.demo.enums.DatabaseError;
 import com.ecommerce.demo.util.Result;
 import io.vavr.control.Try;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +25,17 @@ public class UserQueryRepositoryImpl implements UserQueryRepository{
     }
 
     @Override
-    public Try<Result<Boolean>> exists(Long id) {
-        String sql = "SELECT EXISTS (SELECT 1 FROM \"Users\" WHERE id = ?)";
+    public Try<Result<Boolean>> exists(String email) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM \"Users\" WHERE email = ?)";
 
         return Try.of(() ->
                         Optional.ofNullable(
-                                jdbcTemplate.queryForObject(sql, new Object[]{id}, Boolean.class)
+                                jdbcTemplate.queryForObject(sql, new Object[]{email}, Boolean.class)
                         )
                         .orElse(false)
                 )
                 .map(Result::success)
-                .recover(e -> Result.failure("Error checking user existence: " + e.getMessage()));
+                .recover(e -> Result.failure(
+                        DatabaseError.QUERY_EXECUTION_ERROR.getMessage() + ": " + e.getMessage()));
     }
 }
