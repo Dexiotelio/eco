@@ -2,8 +2,7 @@ package com.ecommerce.demo.enums;
 
 public enum UserErrorCode {
     USER_ALREADY_EXISTS("The user already exists"),
-    USER_CREATION_FAILURE("Failed to create user: "),
-    ADDRESS_CREATION_FAILURE("Errors when creating address: ");
+    USER_CREATION_FAILURE("Failed to create user");
 
     private final String message;
 
