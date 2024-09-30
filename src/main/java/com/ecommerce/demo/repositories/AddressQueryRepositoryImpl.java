@@ -1,6 +1,7 @@
 package com.ecommerce.demo.repositories;
 
 import com.ecommerce.demo.dto.request.AddressRequest;
+import com.ecommerce.demo.enums.DatabaseError;
 import com.ecommerce.demo.util.Result;
 import io.vavr.control.Try;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class AddressQueryRepositoryImpl implements AddressQueryRepository {
                         .orElse(false)
                 )
                 .map(Result::success)
-                .recover(e -> Result.failure("Error checking address existence: " + e.getMessage()));
+                .recover(e -> Result.failure(
+                        DatabaseError.QUERY_EXECUTION_ERROR.getMessage() + ": " + e.getMessage()));
     }
 }
