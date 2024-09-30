@@ -2,14 +2,14 @@ package com.ecommerce.demo.dto.request;
 
 import com.ecommerce.demo.enums.Gender;
 import com.ecommerce.demo.enums.Role;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
-import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class UserRequest implements Serializable {
+public class UserRequest {
     @NotNull(message = "Id is required")
     private final Long id;
 
@@ -50,7 +50,34 @@ public class UserRequest implements Serializable {
     @NotNull(message = "Address is required")
     private final Set<AddressRequest> addresses;
 
-    private UserRequest(Builder builder) {
+    @JsonCreator
+    public UserRequest(
+            @JsonProperty("id") Long id,
+            @JsonProperty("firstName") String firstName,
+            @JsonProperty("lastName") String lastName,
+            @JsonProperty("userName") String userName,
+            @JsonProperty("email") String email,
+            @JsonProperty("password") String password,
+            @JsonProperty("age") Integer age,
+            @JsonProperty("gender") Gender gender,
+            @JsonProperty("phones") List<String> phones,
+            @JsonProperty("role") Role role,
+            @JsonProperty("addresses") Set<AddressRequest> addresses) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+        this.gender = gender;
+        this.phones = phones;
+        this.role = role;
+        this.addresses = addresses;
+    }
+
+
+    public UserRequest(Builder builder) {
         this.id = builder.id;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
