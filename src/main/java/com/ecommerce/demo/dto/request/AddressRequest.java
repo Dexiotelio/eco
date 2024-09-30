@@ -1,10 +1,11 @@
 package com.ecommerce.demo.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
-import java.io.Serializable;
 
-public class AddressRequest implements Serializable {
+public class AddressRequest {
     @NotBlank(message = "Street is required")
     @Size(max = 100, message = "Street cannot exceed 100 characters")
     private final String street;
@@ -36,7 +37,28 @@ public class AddressRequest implements Serializable {
     @Size(max = 50, message = "Country cannot exceed 50 characters")
     private final String country;
 
-    private AddressRequest(Builder builder) {
+    @JsonCreator
+    public AddressRequest(
+            @JsonProperty("street") String street,
+            @JsonProperty("streetNumber") String streetNumber,
+            @JsonProperty("apartmentNumber") String apartmentNumber,
+            @JsonProperty("neighborhood") String neighborhood,
+            @JsonProperty("city") String city,
+            @JsonProperty("state") String state,
+            @JsonProperty("postalCode") String postalCode,
+            @JsonProperty("country") String country) {
+        this.street = street;
+        this.streetNumber = streetNumber;
+        this.apartmentNumber = apartmentNumber;
+        this.neighborhood = neighborhood;
+        this.city = city;
+        this.state = state;
+        this.postalCode = postalCode;
+        this.country = country;
+    }
+
+
+    public AddressRequest(Builder builder) {
         this.street = builder.street;
         this.streetNumber = builder.streetNumber;
         this.apartmentNumber = builder.apartmentNumber;
