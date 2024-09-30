@@ -1,6 +1,7 @@
 package com.ecommerce.demo.repositories;
 
 import com.ecommerce.demo.entities.Address;
+import com.ecommerce.demo.enums.DatabaseError;
 import com.ecommerce.demo.util.Result;
 import io.vavr.control.Try;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class AddressWriteRepositoryImpl implements AddressWriteRepository {
                     address.getNeighborhood(), address.getCity(), address.getState(),
                     address.getPostalCode(), address.getCountry());
             return Result.success();
-        }).getOrElseGet(e -> Result.failure("Error creating address: " + e.getMessage()));
+        }).getOrElseGet(e -> Result.failure(DatabaseError.INSERTION_ERROR.getMessage() + ": " + e.getMessage()));
     }
 
     @Override
