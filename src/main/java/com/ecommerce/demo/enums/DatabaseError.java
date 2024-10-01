@@ -12,7 +12,6 @@ public enum DatabaseError {
     TRANSACTION_ERROR("Transaction error"),
     SCHEMA_ERROR("Error: column not found in the table");
 
-
     private final String message;
 
     DatabaseError(String message) {
