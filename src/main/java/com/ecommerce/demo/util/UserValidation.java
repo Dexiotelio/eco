@@ -47,7 +47,10 @@ public class UserValidation {
                 req -> validateEmail(request.getEmail()),
                 UserErrorCode.USER_EMAIL_FORMAT_FAILURE.getMessage()
         );
-
+        validation.put(
+                req -> validationAge(request.getAge()),
+                UserErrorCode.USER_AGE_FAILURE.getMessage()
+        );
         return validation.evaluate(request);
     }
 
@@ -76,5 +79,9 @@ public class UserValidation {
 
     private static boolean validateEmail(String mail) {
         return mail.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    }
+
+    private static boolean validationAge(int age) {
+        return age < 18;
     }
 }
