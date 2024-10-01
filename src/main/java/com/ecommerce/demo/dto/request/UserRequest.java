@@ -42,7 +42,7 @@ public class UserRequest {
     private final Gender gender;
 
     @NotNull(message = "Phones are required")
-    private final List<String> phones;
+    private final Set<String> phones;
 
     @NotNull(message = "Role is required")
     private final Role role;
@@ -60,7 +60,7 @@ public class UserRequest {
             @JsonProperty("password") String password,
             @JsonProperty("age") Integer age,
             @JsonProperty("gender") Gender gender,
-            @JsonProperty("phones") List<String> phones,
+            @JsonProperty("phones") Set<String> phones,
             @JsonProperty("role") Role role,
             @JsonProperty("addresses") Set<AddressRequest> addresses) {
         this.id = id;
@@ -100,7 +100,7 @@ public class UserRequest {
         private String password;
         private Integer age;
         private Gender gender;
-        private List<String> phones;
+        private Set<String> phones;
         private Role role;
         private Set<AddressRequest> addresses;
 
@@ -112,7 +112,7 @@ public class UserRequest {
         public Builder password(String password) { this.password = password; return this; }
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
-        public Builder phones(List<String> phones) { this.phones = phones; return this; }
+        public Builder phones(Set<String> phones) { this.phones = phones; return this; }
         public Builder role(Role role) { this.role = role; return this; }
         public Builder addresses(Set<AddressRequest> addresses) { this.addresses = addresses; return this; }
 
@@ -153,7 +153,7 @@ public class UserRequest {
         return gender;
     }
 
-    public List<String> getPhones() {
+    public Set<String> getPhones() {
         return phones;
     }
 
