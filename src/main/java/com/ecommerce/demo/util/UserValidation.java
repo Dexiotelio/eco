@@ -6,6 +6,7 @@ import com.ecommerce.demo.enums.Role;
 import com.ecommerce.demo.enums.UserErrorCode;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserValidation {
     public static String validateUserRequest(UserRequest request) {
@@ -45,8 +46,6 @@ public class UserValidation {
         );
     }
 
-
-
     private static boolean validateLength(String value, int min, int max) {
         return value.length() >= min && value.length() <= max;
     }
@@ -55,8 +54,11 @@ public class UserValidation {
         return value.length() <= min;
     }
 
-    private static boolean validatePhones(Set<String> value) {
-        return value != null && !value.isEmpty();
+    private static boolean validatePhones(Set<String> phones) {
+        if (phones.isEmpty() || phones.size() > 2 ) {
+            return false;
+        }
+        return phones.stream().allMatch(p -> p.matches("^\\+\\d{1,3}\\d{4,14}$"));
     }
 
     private static boolean validateContent(Gender gender) {
