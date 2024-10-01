@@ -1,6 +1,7 @@
 package com.ecommerce.demo.controller;
 
 import com.ecommerce.demo.dto.request.UserRequest;
+import com.ecommerce.demo.dto.response.UserResponse;
 import com.ecommerce.demo.services.UserWriteServicesImpl;
 import com.ecommerce.demo.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,12 @@ public class UserController {
                     .collect(Collectors.toSet());
             return ResponseEntity.badRequest().body(Result.failure(errors));
         }
-        userWriteServices.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Result.success("User successfully created"));
+
+        Result<UserResponse> response = userWriteServices.create(request);
+        if (response.isFailure()) {
+            return ResponseEntity.badRequest().body(Result.failure(response.getErrors()));
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                Result.success("User successfully created: " + response));
     }
 }
