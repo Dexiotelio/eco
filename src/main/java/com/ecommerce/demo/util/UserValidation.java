@@ -4,46 +4,51 @@ import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.enums.Gender;
 import com.ecommerce.demo.enums.Role;
 import com.ecommerce.demo.enums.UserErrorCode;
+import io.vavr.control.Either;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class UserValidation {
-    public static String validateUserRequest(UserRequest request) {
+
+    private UserValidation() {}
+
+    public static Either<Set<String>, UserRequest> validateUserRequest(UserRequest request) {
         Dictionary<UserRequest> validation = new Dictionary<>();
 
         validation.put(
                 req -> validateLength(request.getFirstName(), 3, 50),
-                req -> UserErrorCode.USER_FIRSTNAME_LENGTH_FAILURE.getMessage()
+                UserErrorCode.USER_FIRSTNAME_LENGTH_FAILURE.getMessage()
         );
         validation.put(
                 req -> validateLength(request.getLastName(), 3, 50),
-                req -> UserErrorCode.USER_LASTNAME_LENGTH_FAILURE.getMessage()
+                UserErrorCode.USER_LASTNAME_LENGTH_FAILURE.getMessage()
         );
         validation.put(
                 req -> validateLength(request.getUserName(), 3, 50),
-                req -> UserErrorCode.USER_USERNAME_LENGTH_FAILURE.getMessage()
+                UserErrorCode.USER_USERNAME_LENGTH_FAILURE.getMessage()
         );
         validation.put(
                 req -> validateLength(request.getPassword(), 10),
-                req -> UserErrorCode.USER_PASSWORD_LENGTH_FAILURE.getMessage()
+                UserErrorCode.USER_PASSWORD_LENGTH_FAILURE.getMessage()
         );
         validation.put(
                 req -> validatePhones(request.getPhones()),
-                req -> UserErrorCode.USER_PHONES_FAILURE.getMessage()
+                UserErrorCode.USER_PHONES_FAILURE.getMessage()
         );
         validation.put(
                 req -> validateContent(request.getGender()),
-                req -> UserErrorCode.USER_GENDER_FAILURE.getMessage()
+                UserErrorCode.USER_GENDER_FAILURE.getMessage()
         );
         validation.put(
                 req -> validateContent(request.getRole()),
-                req -> UserErrorCode.USER_ROLE_FAILURE.getMessage();
+                UserErrorCode.USER_ROLE_FAILURE.getMessage()
         );
         validation.put(
                 req -> validateEmail(request.getEmail()),
-                req -> UserErrorCode.USER_EMAIL_FORMAT_FAILURE.getMessage()
+                UserErrorCode.USER_EMAIL_FORMAT_FAILURE.getMessage()
         );
+
+        return validation.evaluate(request);
     }
 
     private static boolean validateLength(String value, int min, int max) {
