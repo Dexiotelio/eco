@@ -42,9 +42,9 @@ public class UserWriteServicesImpl implements UserWriteServices {
     @Override
     @Transactional
     public Result<UserResponse> create(UserRequest request) {
-        Either<Set<String>, UserRequest> userValidationResult = UserValidation.validateUserRequest(request);
-        if (userValidationResult.isLeft()) {
-            return Result.failure(userValidationResult.getLeft());
+        Either<Set<String>, UserRequest> userValidation = UserValidation.validateUserRequest(request);
+        if (userValidation.isLeft()) {
+            return Result.failure(userValidation.getLeft());
         }
 
         Try<Result<Boolean>> userExists = userQueryRepository.exists(request.getEmail());
