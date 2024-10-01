@@ -38,4 +38,19 @@ public class UserQueryRepositoryImpl implements UserQueryRepository{
                 .recover(e -> Result.failure(
                         DatabaseError.QUERY_EXECUTION_ERROR.getMessage() + ": " + e.getMessage()));
     }
+
+    @Override
+    public Try<Result<Boolean>> existsUsername(String username) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM \"Users\" WHERE username = ?)";
+
+        return Try.of(() ->
+                        Optional.ofNullable(
+                                        jdbcTemplate.queryForObject(sql, new Object[]{username}, Boolean.class)
+                                )
+                                .orElse(false)
+                )
+                .map(Result::success)
+                .recover(e -> Result.failure(
+                        DatabaseError.QUERY_EXECUTION_ERROR.getMessage() + ": " + e.getMessage()));
+    }
 }
