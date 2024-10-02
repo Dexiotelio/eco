@@ -28,12 +28,16 @@ public class UserValidation {
                 UserErrorCode.USER_USERNAME_LENGTH_FAILURE.getMessage()
         );
         validation.put(
-                req -> validateLength(request.getPassword(), 10),
+                req -> validateLength(request.getPassword(), 10, 30),
                 UserErrorCode.USER_PASSWORD_LENGTH_FAILURE.getMessage()
         );
         validation.put(
-                req -> validatePhones(request.getPhones()),
+                req -> validatePhonesSize(request.getPhones()),
                 UserErrorCode.USER_PHONES_FAILURE.getMessage()
+        );
+        validation.put(
+                req -> validatePhonesMatch(request.getPhones()),
+                UserErrorCode.USER_PHONE_FORMAT_FAILURE.getMessage()
         );
         validation.put(
                 req -> validateContent(request.getGender()),
@@ -62,11 +66,12 @@ public class UserValidation {
         return value.length() <= min;
     }
 
-    private static boolean validatePhones(Set<String> phones) {
-        if (phones.isEmpty() || phones.size() > 2 ) {
-            return false;
-        }
+    private static boolean validatePhonesMatch(Set<String> phones) {
         return phones.stream().allMatch(p -> p.matches("^\\+\\d{1,3}\\d{4,14}$"));
+    }
+
+    private static boolean validatePhonesSize(Set<String> phones) {
+        return !phones.isEmpty() && phones.size() <= 2;
     }
 
     private static boolean validateContent(Gender gender) {
@@ -82,6 +87,6 @@ public class UserValidation {
     }
 
     private static boolean validationAge(int age) {
-        return age < 18;
+        return age >= 18;
     }
 }
