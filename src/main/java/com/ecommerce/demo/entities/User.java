@@ -5,8 +5,8 @@ import com.ecommerce.demo.enums.Gender;
 import com.ecommerce.demo.enums.Role;
 
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.List;
+
+import java.util.Set;
 
 public class User {
     private Long id;
@@ -17,7 +17,7 @@ public class User {
     private String password;
     private Integer age;
     private Gender gender;
-    private List<String> phones;
+    private Set<String> phones;
     private Role role;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
@@ -44,7 +44,7 @@ public class User {
         private String password;
         private Integer age;
         private Gender gender;
-        private List<String> phones;
+        private Set<String> phones;
         private Role role;
         private ZonedDateTime createdAt;
         private ZonedDateTime updatedAt;
@@ -56,7 +56,7 @@ public class User {
         public Builder password(String password) { this.password = password; return this; }
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
-        public Builder phones(List<String> phones) { this.phones = phones; return this; }
+        public Builder phones(Set<String> phones) { this.phones = phones; return this; }
         public Builder role(Role role) { this.role = role; return this; }
 
         public User build() {
@@ -142,11 +142,11 @@ public class User {
         this.gender = gender;
     }
 
-    public List<String> getPhones() {
+    public Set<String> getPhones() {
         return phones;
     }
 
-    public void setPhones(List<String> phones) {
+    public void setPhones(Set<String> phones) {
         this.phones = phones;
     }
 
