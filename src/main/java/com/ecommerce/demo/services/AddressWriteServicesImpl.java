@@ -9,6 +9,7 @@ import com.ecommerce.demo.repositories.AddressWriteRepositoryImpl;
 import com.ecommerce.demo.util.AddressValidation;
 import com.ecommerce.demo.util.Result;
 import io.vavr.control.Either;
+import io.vavr.control.Try;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,14 @@ public class AddressWriteServicesImpl implements AddressWriteServices {
         if (addressValidation.isLeft()) {
             return Result.failure(addressValidation.getLeft());
         }
-        if (!addressQueryRepository.exists(request).isSuccess()) {
+
+        Try<Result<Boolean>> addressExists = addressQueryRepository.exists(request);
+        if (addressExists.isFailure()) {
+            return Result.failure(addressExists.getCause().getMessage());
+        }
+
+        Result<Boolean> addressExistsResult = addressExists.get();
+        if (addressExistsResult.isSuccess() && addressExistsResult.getValue()) {
             return Result.failure(AddressErrorCode.ADDRESS_ALREADY_EXISTS.getMessage());
         }
 
