@@ -30,11 +30,11 @@ public class UserRequest {
     private final String email;
 
     @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @Size(min = 10, message = "Password must be at least 10 characters long")
     private final String password;
 
     @NotNull(message = "Age is required")
-    @Min(value = 19, message = "Age must be greater than 18")
+    @Min(value = 18, message = "Age must be greater than 18")
     private final Integer age;
 
     @NotNull(message = "Gender is required")
