@@ -1,5 +1,6 @@
 package com.ecommerce.demo.util;
 
+import com.ecommerce.demo.dto.request.AddressRequest;
 import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.enums.Gender;
 import com.ecommerce.demo.enums.Role;
@@ -55,6 +56,10 @@ public class UserValidation {
                 req -> validationAge(request.getAge()),
                 UserErrorCode.USER_AGE_FAILURE.getMessage()
         );
+        validation.put(
+                req -> addressIEmpty(request.getAddress()),
+                UserErrorCode.USER_EMAIL_FORMAT_FAILURE.getMessage()
+        );
         return validation.evaluate(request);
     }
 
@@ -88,5 +93,9 @@ public class UserValidation {
 
     private static boolean validationAge(int age) {
         return age >= 18;
+    }
+
+    private static boolean addressIEmpty(Set<AddressRequest> address) {
+        return !address.isEmpty();
     }
 }
