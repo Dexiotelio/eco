@@ -1,5 +1,6 @@
 package com.ecommerce.demo.controller;
 
+// Import necessary classes for handling requests and responses in the controller
 import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.dto.response.UserResponse;
 import com.ecommerce.demo.services.UserWriteServicesImpl;
@@ -17,30 +18,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+// Controller responsible for user management
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/users") // Define the base path for user-related requests
 public class UserController {
+
+    // Service to handle user creation logic
     private final UserWriteServicesImpl userWriteServices;
 
+    // Constructor that injects the user write service
     @Autowired
     public UserController(UserWriteServicesImpl userWriteServices) {
         this.userWriteServices = userWriteServices;
     }
 
-    @PostMapping("/create")
+    // Method to create a new user
+    @PostMapping("/create") // Maps the POST request to create a user
     public ResponseEntity<Result<?>> createUser(@RequestBody UserRequest request, BindingResult bindingResult) {
+        // Check for validation errors in the request
         if (bindingResult.hasErrors()) {
+            // Collect error messages and return them as a response
             Set<String> errors = bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.toSet());
-            return ResponseEntity.badRequest().body(Result.failure(errors));
+            return ResponseEntity.badRequest().body(Result.failure(errors)); // Return a 400 Bad Request
         }
 
+        // Call the service to create the user and store the response
         Result<UserResponse> response = userWriteServices.create(request);
+        // Check if user creation was successful
         if (response.isFailure()) {
-            return ResponseEntity.badRequest().body(Result.failure(response.getErrors()));
+            return ResponseEntity.badRequest().body(Result.failure(response.getErrors())); // Return a 400 with errors
         }
+        // Return a 201 Created response if the user was successfully created
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                Result.success("User successfully created: " + response));
+                Result.success("User successfully created: " + response)); // Return the success result
     }
 }
