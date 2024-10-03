@@ -10,92 +10,114 @@ import io.vavr.control.Either;
 import java.util.Set;
 
 public class UserValidation {
-
+    // Private constructor to prevent instantiation
     private UserValidation() {}
 
+    // Method to validate a UserRequest object
     public static Either<Set<String>, UserRequest> validateUserRequest(UserRequest request) {
-        Dictionary<UserRequest> validation = new Dictionary<>();
+        Dictionary<UserRequest> validation = new Dictionary<>(); // Create a new Dictionary for validation rules
 
-        validation.put(
-                req -> validateLength(request.getFirstName(), 3, 50),
+        // Add validation rules for first name length
+        validation.addValidationRule(
+                req -> isLengthValid(request.getFirstName(), 3, 50),
                 UserErrorCode.USER_FIRSTNAME_LENGTH_FAILURE.getMessage()
         );
-        validation.put(
-                req -> validateLength(request.getLastName(), 3, 50),
+        // Add validation rules for last name length
+        validation.addValidationRule(
+                req -> isLengthValid(request.getLastName(), 3, 50),
                 UserErrorCode.USER_LASTNAME_LENGTH_FAILURE.getMessage()
         );
-        validation.put(
-                req -> validateLength(request.getUserName(), 3, 50),
+        // Add validation rules for username length
+        validation.addValidationRule(
+                req -> isLengthValid(request.getUserName(), 3, 50),
                 UserErrorCode.USER_USERNAME_LENGTH_FAILURE.getMessage()
         );
-        validation.put(
-                req -> validateLength(request.getPassword(), 10, 30),
+        // Add validation rules for password length
+        validation.addValidationRule(
+                req -> isLengthValid(request.getPassword(), 10, 30),
                 UserErrorCode.USER_PASSWORD_LENGTH_FAILURE.getMessage()
         );
-        validation.put(
+        // Add validation rules for phone size
+        validation.addValidationRule(
                 req -> validatePhonesSize(request.getPhones()),
                 UserErrorCode.USER_PHONES_FAILURE.getMessage()
         );
-        validation.put(
+        // Add validation rules for phone format
+        validation.addValidationRule(
                 req -> validatePhonesMatch(request.getPhones()),
                 UserErrorCode.USER_PHONE_FORMAT_FAILURE.getMessage()
         );
-        validation.put(
+        // Add validation rules for gender
+        validation.addValidationRule(
                 req -> validateContent(request.getGender()),
                 UserErrorCode.USER_GENDER_FAILURE.getMessage()
         );
-        validation.put(
+        // Add validation rules for role
+        validation.addValidationRule(
                 req -> validateContent(request.getRole()),
                 UserErrorCode.USER_ROLE_FAILURE.getMessage()
         );
-        validation.put(
+        // Add validation rules for email format
+        validation.addValidationRule(
                 req -> validateEmail(request.getEmail()),
                 UserErrorCode.USER_EMAIL_FORMAT_FAILURE.getMessage()
         );
-        validation.put(
-                req -> validationAge(request.getAge()),
+        // Add validation rules for age
+        validation.addValidationRule(
+                req -> validateAge(request.getAge()),
                 UserErrorCode.USER_AGE_FAILURE.getMessage()
         );
-        validation.put(
-                req -> addressIEmpty(request.getAddress()),
-                UserErrorCode.USER_EMAIL_FORMAT_FAILURE.getMessage()
+        // Add validation rules for address
+        validation.addValidationRule(
+                req -> isAddressValid(request.getAddress()),
+                UserErrorCode.USER_ADDRESS_EMPTY.getMessage()
         );
-        return validation.evaluate(request);
+        // Validate the UserRequest and return the result
+        return validation.validate(request);
     }
 
-    private static boolean validateLength(String value, int min, int max) {
-        return value.length() >= min && value.length() <= max;
+    // Method to check if the length of a string is valid
+    private static boolean isLengthValid(String value, int min, int max) {
+        return value.length() >= min && value.length() <= max; // Check if length is within bounds
     }
 
-    private static boolean validateLength(String value, int min) {
-        return value.length() <= min;
+    // Overloaded method to check if the length of a string is valid (only minimum)
+    private static boolean isLengthValid(String value, int min) {
+        return value.length() <= min; // Check if length is within the maximum
     }
 
+    // Method to validate phone format
     private static boolean validatePhonesMatch(Set<String> phones) {
-        return phones.stream().allMatch(p -> p.matches("^\\+\\d{1,3}\\d{4,14}$"));
+        return phones.stream().allMatch(p -> p.matches("^\\+\\d{1,3}\\d{4,14}$")); // Ensure all phones match the format
     }
 
+    // Method to validate the size of the phone set
     private static boolean validatePhonesSize(Set<String> phones) {
-        return !phones.isEmpty() && phones.size() <= 2;
+        return !phones.isEmpty() && phones.size() <= 2; // Check that there are 1 to 2 phones
     }
 
+    // Method to validate that the gender is not null
     private static boolean validateContent(Gender gender) {
-        return gender != null;
+        return gender != null; // Ensure gender is provided
     }
 
+    // Method to validate that the role is not null
     private static boolean validateContent(Role role) {
-        return role != null;
+        return role != null; // Ensure role is provided
     }
 
+    // Method to validate the email format
     private static boolean validateEmail(String mail) {
-        return mail.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+        return mail.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"); // Check if email matches the regex
     }
 
-    private static boolean validationAge(int age) {
-        return age >= 18;
+    // Method to validate that the age is at least 18
+    private static boolean validateAge(int age) {
+        return age >= 18; // Check if age is valid
     }
 
-    private static boolean addressIEmpty(Set<AddressRequest> address) {
-        return !address.isEmpty();
+    // Method to validate that the address is not empty
+    private static boolean isAddressValid(Set<AddressRequest> address) {
+        return address != null && !address.isEmpty(); // Ensure address is provided
     }
 }
