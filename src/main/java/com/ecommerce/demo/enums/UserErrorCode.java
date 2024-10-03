@@ -14,7 +14,8 @@ public enum UserErrorCode {
     USER_PHONES_FAILURE("At least one phone number is required. You must provide between 1 and 2 phone numbers."),
     USER_EMAIL_FORMAT_FAILURE("Email format is invalid."),
     USER_PHONE_FORMAT_FAILURE("Phone number format is invalid. It must start with '+' " +
-            "followed by 1 to 3 digits for the country code, and then 4 to 14 digits for the phone number.");
+            "followed by 1 to 3 digits for the country code, and then 4 to 14 digits for the phone number."),
+    USER_ADDRESS_EMPTY("Address cannot be empty.");
 
     private final String message;
 
