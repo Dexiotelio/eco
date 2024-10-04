@@ -2,7 +2,6 @@ package com.ecommerce.demo.util;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 public class Result<T> {
