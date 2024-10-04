@@ -6,12 +6,14 @@ import java.util.Set;
 public class ErrorResponse {
     private final String errorCode;
     private final Set<String> messages;
+    private final String message;
     private final ErrorDetails details;
     private final LocalDateTime timestamp;
 
-    public ErrorResponse(String errorCode, Set<String> messages, ErrorDetails details) {
+    public ErrorResponse(String errorCode, Set<String> messages, String message, ErrorDetails details) {
         this.errorCode = errorCode;
         this.messages = messages;
+        this.message = message;
         this.details = details;
         this.timestamp = LocalDateTime.now();
     }
@@ -20,8 +22,12 @@ public class ErrorResponse {
         return errorCode;
     }
 
-    public Set<String> getMessage() {
+    public Set<String> getMessages() {
         return messages;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public ErrorDetails getDetails() {
@@ -36,7 +42,8 @@ public class ErrorResponse {
     public String toString() {
         return "ErrorResponse{" +
                 "errorCode='" + errorCode + '\'' +
-                ", message='" + messages + '\'' +
+                ", messages='" + messages + '\'' +
+                ", message='" + message + '\'' +
                 ", details=" + details +
                 ", timestamp=" + timestamp +
                 '}';
