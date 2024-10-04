@@ -1,17 +1,17 @@
-package com.ecommerce.demo.dto;
+package com.ecommerce.demo.dto.error;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 public class ErrorResponse {
     private final String errorCode;
-    private final String message;
+    private final Set<String> messages;
     private final ErrorDetails details;
     private final LocalDateTime timestamp;
 
-    public ErrorResponse(String errorCode, String message, ErrorDetails details) {
+    public ErrorResponse(String errorCode, Set<String> messages, ErrorDetails details) {
         this.errorCode = errorCode;
-        this.message = message;
+        this.messages = messages;
         this.details = details;
         this.timestamp = LocalDateTime.now();
     }
@@ -20,8 +20,8 @@ public class ErrorResponse {
         return errorCode;
     }
 
-    public String getMessage() {
-        return message;
+    public Set<String> getMessage() {
+        return messages;
     }
 
     public ErrorDetails getDetails() {
@@ -36,13 +36,12 @@ public class ErrorResponse {
     public String toString() {
         return "ErrorResponse{" +
                 "errorCode='" + errorCode + '\'' +
-                ", message='" + message + '\'' +
+                ", message='" + messages + '\'' +
                 ", details=" + details +
                 ", timestamp=" + timestamp +
                 '}';
     }
 
-    // Clase anidada para detalles del error
     public static class ErrorDetails {
         private final String providedValue;
         private final Set<String> acceptedValues;
