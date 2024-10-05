@@ -2,7 +2,6 @@ package com.ecommerce.demo.services;
 
 import com.ecommerce.demo.dto.request.AddressRequest;
 import com.ecommerce.demo.dto.response.AddressResponse;
-import com.ecommerce.demo.entities.Address;
 import com.ecommerce.demo.enums.AddressErrorCode;
 import com.ecommerce.demo.repositories.AddressQueryRepositoryImpl;
 import com.ecommerce.demo.repositories.AddressWriteRepositoryImpl;
@@ -40,6 +39,11 @@ public class AddressWriteServicesImpl implements AddressWriteServices {
     @Transactional // Indicates that the method should be executed within a transaction
     public Result<AddressResponse> create(Long userId, AddressRequest request) {
         // Check if the address already exists
+        Either<Set<String>, AddressRequest> addressValidation = AddressValidation.validateAddressRequest(request);
+        if (addressValidation.isLeft()) {
+            return Result.failure(addressValidation.getLeft());
+        }
+
         Try<Result<Boolean>> addressExists = addressQueryRepository.exists(request);
         if (addressExists.isFailure()) {
             return Result.failure(addressExists.getCause().getMessage()); // Return failure if query fails
@@ -51,18 +55,16 @@ public class AddressWriteServicesImpl implements AddressWriteServices {
             return Result.failure(AddressErrorCode.ADDRESS_ALREADY_EXISTS.getMessage());
         }
 
-        // Convert the AddressRequest to an Address entity
-        Address address = Address.toAddress(userId, request);
         // Attempt to create the address in the repository
-        Result<Void> addressCreationResult = addressWriteRepository.create(address);
+        Result<Void> addressCreationResult = addressWriteRepository.create(userId, request);
         if (addressCreationResult.isFailure()) {
             // Return failure if address creation fails, including any errors
-            return Result.failure(AddressErrorCode.ADDRESS_CREATION_FAILURE.getMessage()
-                    + String.join(", ", addressCreationResult.getErrors()));
+            return Result.failure(AddressErrorCode.ADDRESS_CREATION_FAILURE.getMessage() +
+                    ": " + String.join(", ", addressCreationResult.getErrors()));
         }
 
         // Convert the Address entity to an AddressResponse and return success
-        AddressResponse response = AddressResponse.toAddressResponse(address);
+        AddressResponse response = AddressResponse.toAddressResponse(request);
         return Result.success(response);
     }
 
