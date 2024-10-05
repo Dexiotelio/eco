@@ -48,3 +48,25 @@ CREATE INDEX idx_address_state ON "Address" USING btree (state);
 CREATE INDEX idx_address_country ON "Address" USING btree (country);
 CREATE INDEX idx_address ON "Address" USING btree (street, street_number, neighborhood, city, state, postal_code, country);
 
+CREATE TABLE User_session (
+    session_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    user_id BIGINT NOT NULL REFERENCES "Users" (id) ON DELETE CASCADE,
+    token TEXT NOT NULL,
+    refresh_token TEXT,
+    active BOOLEAN DEFAULT TRUE,
+    ip_address TEXT,
+    user_agent TEXT,
+    device_type TEXT,
+    expiration TIMESTAMP WITH TIME ZONE,
+    created_by BIGINT REFERENCES "Users" (id),
+    created_at TIMESTAMP WITH ZONE DEFAULT NOW(),
+    last_accessed TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    CONSTRAINT unique_session UNIQUE (user_id, token)
+)
+
+CREATE INDEX idx_user_id ON User_session USING btree (user_id);
+CREATE INDEX idx_token ON User_session USING btree (token);
+CREATE INDEX idx_expiration ON User_session USING btree (expiration);
+CREATE INDEX idx_last_accessed ON User_session USING btree (last_accessed);
+CREATE INDEX idx_user_last_accessed ON User_session USING btree (user_id, last_accessed);
+
