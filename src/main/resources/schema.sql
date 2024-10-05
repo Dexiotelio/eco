@@ -30,14 +30,14 @@ GRANT ALL PRIVILEGES ON "Users" TO admin;
 
 CREATE TABLE "Address" (
     user_id BIGINT NOT NULL REFERENCES "Users" (id) ON DELETE CASCADE,
-    street TEXT NOT NULL,
-    street_number TEXT NOT NULL,
-    apartment_number TEXT,
-    neighborhood TEXT NOT NULL,
-    city TEXT NOT NULL,
-    state TEXT NOT NULL,
-    postal_code TEXT NOT NULL,
-    country TEXT NOT NULL,
+    street VARCHAR(255) NOT NULL,
+    street_number VARCHAR(20) NOT NULL,
+    apartment_number VARCHAR(10),
+    neighborhood VARCHAR(100) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    country VARCHAR(100) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT unique_address UNIQUE (street, street_number, city, state, postal_code, country)
@@ -51,16 +51,19 @@ CREATE INDEX idx_address ON "Address" USING btree (street, street_number, neighb
 CREATE TABLE User_session (
     session_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id BIGINT NOT NULL REFERENCES "Users" (id) ON DELETE CASCADE,
-    token TEXT NOT NULL,
-    refresh_token TEXT,
+    token VARCHAR(512) NOT NULL,
+    refresh_token VARCHAR(512) NOT NULL,
     active BOOLEAN DEFAULT TRUE,
-    ip_address TEXT,
-    user_agent TEXT,
-    device_type TEXT,
+    ip_address INET,
+    user_agent VARCHAR(520),
+    device_type TEXT CHECK (device_type IN ('mobile', 'desktop', 'table', 'other'))
     expiration TIMESTAMP WITH TIME ZONE,
     created_by BIGINT REFERENCES "Users" (id),
     created_at TIMESTAMP WITH ZONE DEFAULT NOW(),
     last_accessed TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    two_factor_enabled BOOLEAN DEFAULT FALSE,
+    two_factor_code VARCHAR(10),
+    two_factor_expires TIMESTAMP WITH TIME ZONE,
     CONSTRAINT unique_session UNIQUE (user_id, token)
 )
 
@@ -74,7 +77,7 @@ CREATE INDEX idx_user_last_accessed ON User_session USING btree (user_id, last_a
 CREATE OR REPLACE FUNCTION update_timestamp_fnc()
 RETURN TRIGGER AS $$
 BEGIN
-    NEW.update_at = NOW();
+    NEW.updated_at = NOW();
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
