@@ -70,3 +70,16 @@ CREATE INDEX idx_expiration ON User_session USING btree (expiration);
 CREATE INDEX idx_last_accessed ON User_session USING btree (last_accessed);
 CREATE INDEX idx_user_last_accessed ON User_session USING btree (user_id, last_accessed);
 
+-- triggers function
+CREATE OR REPLACE FUNCTION update_timestamp_fnc()
+RETURN TRIGGER AS $$
+BEGIN
+    NEW.update_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_users_update_at
+BEFORE UPDATE ON "Users"
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp_fnc();
