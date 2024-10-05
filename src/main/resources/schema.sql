@@ -46,3 +46,5 @@ CREATE TABLE "Address" (
 CREATE INDEX idx_address_city ON "Address" USING btree (city);
 CREATE INDEX idx_address_state ON "Address" USING btree (state);
 CREATE INDEX idx_address_country ON "Address" USING btree (country);
+CREATE INDEX idx_address ON "Address" USING btree (street, street_number, neighborhood, city, state, postal_code, country);
+
