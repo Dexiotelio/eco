@@ -1,6 +1,5 @@
-package com.ecommerce.demo.services;
+package com.ecommerce.demo.services.interfaces;
 
-import com.ecommerce.demo.dto.request.AddressRequest;
 import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.dto.response.UserResponse;
 import com.ecommerce.demo.util.Result;
