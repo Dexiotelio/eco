@@ -97,6 +97,7 @@ public class UserWriteServicesImpl implements UserWriteServices {
                         UserErrorCode.USER_ADDRESS_CREATION_FAILURE.getMessage(), errorsMessages));
             }
         }
+
         // Convert the user entity to response format and return success
         UserResponse userResponse = UserResponse.toUserResponse(user);
         logger.info("Proceso de creación de usuario finalizado con éxito: {}", userResponse);
