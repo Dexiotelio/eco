@@ -1,18 +1,22 @@
 CREATE TABLE "Users" (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    firstname TEXT NOT NULL,
-    lastname TEXT NOT NULL,
-    username TEXT NOT NULL UNIQUE,
+    firstname VARCHAR(100) NOT NULL,
+    lastname VARCHAR(100) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
     age INT CHECK (age >= 18),
-    email TEXT NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
     phones VARCHAR(20)[] NOT NULL,
     password TEXT NOT NULL,
-    gender TEXT CHECK (gender IN ('male', 'female', 'other')),
-    role TEXT CHECK (role IN ('client', 'admin', 'visitor')) NOT NULL,
+    gender gender_enum NOT NULL,
+    role role_enum NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT check_phones_size CHECK (array_length(phones, 1) <= 2)
 );
+
+-- enums
+CREATE TYPE gender_enum as ENUM ('male', 'female', 'other');
+CREATE TYPE role_enum as ENUM ('client', 'admin', 'visitor');
 
 CREATE INDEX idx_users_username ON "Users" USING btree (username);
 CREATE INDEX idx_users_email ON "Users" USING btree (email);
