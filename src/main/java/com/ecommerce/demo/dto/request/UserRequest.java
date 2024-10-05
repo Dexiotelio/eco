@@ -9,9 +9,6 @@ import jakarta.validation.constraints.*;
 import java.util.Set;
 
 public class UserRequest {
-    @NotNull(message = "Id is required")
-    private final Long id;
-
     @NotBlank(message = "First name is required")
     @Size(max = 50, message = "First name cannot exceed 50 characters")
     private final String firstName;
@@ -51,7 +48,6 @@ public class UserRequest {
 
     @JsonCreator
     public UserRequest(
-            @JsonProperty("id") Long id,
             @JsonProperty("firstName") String firstName,
             @JsonProperty("lastName") String lastName,
             @JsonProperty("userName") String userName,
@@ -62,12 +58,11 @@ public class UserRequest {
             @JsonProperty("phones") Set<String> phones,
             @JsonProperty("role") Role role,
             @JsonProperty("addresses") Set<AddressRequest> addresses) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
+        this.firstName = firstName != null ? firstName.trim() : null;
+        this.lastName = lastName != null ? lastName.trim() : null;
+        this.userName = userName != null ? userName.trim() : null;
+        this.email = email != null ? email.trim() : null;
+        this.password = password != null ? password.trim() : null;
         this.age = age;
         this.gender = gender;
         this.phones = phones;
@@ -75,9 +70,7 @@ public class UserRequest {
         this.addresses = addresses;
     }
 
-
     public UserRequest(Builder builder) {
-        this.id = builder.id;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.userName = builder.userName;
@@ -91,7 +84,6 @@ public class UserRequest {
     }
 
     public static class Builder {
-        private Long id;
         private String firstName;
         private String lastName;
         private String userName;
@@ -103,7 +95,6 @@ public class UserRequest {
         private Role role;
         private Set<AddressRequest> addresses;
 
-        public Builder id(Long id) { this.id = id; return this; }
         public Builder firstName(String firstName) { this.firstName = firstName; return this; }
         public Builder lastName(String lastName) { this.lastName = lastName; return this; }
         public Builder userName(String userName) { this.userName = userName; return this; }
@@ -120,50 +111,36 @@ public class UserRequest {
         }
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getFirstName() {
         return firstName;
     }
-
     public String getLastName() {
         return lastName;
     }
-
     public String getUserName() {
         return userName;
     }
-
     public String getEmail() {
         return email;
     }
-
     public String getPassword() {
         return password;
     }
-
     public Integer getAge() {
         return age;
     }
-
     public Gender getGender() {
         return gender;
     }
-
     public Set<String> getPhones() {
         return phones;
     }
-
     public Role getRole() { return role; }
-
     public Set<AddressRequest> getAddress() { return addresses; }
 
     @Override
     public String toString() {
         return "UserRequest{" +
-                "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", userName='" + userName + '\'' +
