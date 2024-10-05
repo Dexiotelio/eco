@@ -18,6 +18,7 @@ public class Address {
     private ZonedDateTime updatedAt;
 
     public Address(Builder builder) {
+        this.userId = builder.userId;
         this.street = builder.street;
         this.streetNumber = builder.streetNumber;
         this.apartmentNumber = builder.apartmentNumber;
@@ -52,16 +53,15 @@ public class Address {
         private Builder state(String state) { this.state = state; return this; }
         private Builder postalCode(String postalCode) { this.postalCode = postalCode; return this; }
         private Builder country(String country) { this.country = country; return this; }
-        private Builder createdAt(ZonedDateTime createdAt) { this.createdAt = createdAt; return this; }
-        private Builder updatedAt(ZonedDateTime updatedAt) { this.updatedAt = updatedAt; return this; }
 
         public Address build() {
             return new Address(this);
         }
     }
 
-    public static Address toAddress(AddressRequest request) {
+    public static Address toAddress(Long userId, AddressRequest request) {
         return new Builder()
+                .userId(userId)
                 .street(request.getStreet())
                 .streetNumber(request.getStreetNumber())
                 .apartmentNumber(request.getApartmentNumber())
