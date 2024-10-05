@@ -6,6 +6,7 @@ import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.dto.response.UserResponse;
 import com.ecommerce.demo.services.UserWriteServicesImpl;
 import com.ecommerce.demo.util.Result;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,27 +40,15 @@ public class UserController {
 
     // Method to create a new user
     @PostMapping("/create") // Maps the POST request to create a user
-    public ResponseEntity<?> createUser(@RequestBody UserRequest request, BindingResult bindingResult) {
-        Set<String> errorMessages = new HashSet<>();
-        // Check for validation errors in the request
-        if (bindingResult.hasErrors()) {
-            logger.error("Validation errors occurred while creating user: {}", bindingResult.getAllErrors());
-            // Collect error messages and return them as a response
-            errorMessages.addAll(bindingResult.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.toSet()));
-            return ResponseEntity.badRequest().body(
-                    new ErrorResponse("VALIDATION_ERROR", errorMessages, null)); // Return a 400 Bad Request
-        }
-
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequest request) {
         // Call the service to create the user and store the response
         Result<UserResponse> response = userWriteServices.create(request);
         // Check if user creation was successful
         if (response.isFailure()) {
             logger.error("User creation failed: {}", response.getErrors());
-            errorMessages.addAll(response.getErrors());
             return ResponseEntity.badRequest().body(
-                    new ErrorResponse("User Creation Failed", errorMessages, null)); // Return a 400 with errors
+                    new ErrorResponse(
+                            "User Creation Failed", response.getErrors(), null, null)); // Return a 400 with errors
         }
         // Return a 201 Created response if the user was successfully created
         logger.info("User successfully created: {}", response);
