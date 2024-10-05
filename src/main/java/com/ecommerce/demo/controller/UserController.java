@@ -53,6 +53,6 @@ public class UserController {
         // Return a 201 Created response if the user was successfully created
         logger.info("User successfully created: {}", response);
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                Result.success("User successfully created: " + response)); // Return the success result
+                Result.success("User successfully created: " + response.toString())); // Return the success result
     }
 }
