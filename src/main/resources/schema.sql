@@ -1,9 +1,13 @@
+-- enums
+CREATE TYPE gender_enum as ENUM ('male', 'female', 'other');
+CREATE TYPE role_enum as ENUM ('client', 'admin', 'visitor');
+
 CREATE TABLE "Users" (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     firstname VARCHAR(100) NOT NULL,
     lastname VARCHAR(100) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
-    age INT CHECK (age >= 18),
+    age INT CHECK (age >= 18 AND age <= 120),
     email VARCHAR(255) NOT NULL UNIQUE,
     phones VARCHAR(20)[] NOT NULL,
     password TEXT NOT NULL,
@@ -12,11 +16,10 @@ CREATE TABLE "Users" (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT check_phones_size CHECK (array_length(phones, 1) <= 2)
+    CONSTRAINT check_email_format CHECK (validate_email_format(email)),
+    CONSTRAINT check_phone_format CHECK (array_length(phones)
+    AND every(validate_phone_format(phone) FOR phone IN phones))
 );
-
--- enums
-CREATE TYPE gender_enum as ENUM ('male', 'female', 'other');
-CREATE TYPE role_enum as ENUM ('client', 'admin', 'visitor');
 
 CREATE INDEX idx_users_username ON "Users" USING btree (username);
 CREATE INDEX idx_users_email ON "Users" USING btree (email);
@@ -61,7 +64,7 @@ CREATE TABLE User_session (
     ip_address INET,
     user_agent VARCHAR(520),
     device_type TEXT CHECK (device_type IN ('mobile', 'desktop', 'table', 'other'))
-    expiration TIMESTAMP WITH TIME ZONE,
+    expiration TIMESTAMP WITH TIME ZONE DEFAULT NOW() + INTERVAL '1 hour',
     created_by BIGINT REFERENCES "Users" (id),
     created_at TIMESTAMP WITH ZONE DEFAULT NOW(),
     last_accessed TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -77,7 +80,7 @@ CREATE INDEX idx_expiration ON User_session USING btree (expiration);
 CREATE INDEX idx_last_accessed ON User_session USING btree (last_accessed);
 CREATE INDEX idx_user_last_accessed ON User_session USING btree (user_id, last_accessed);
 
--- triggers function
+-- triggers function for timestamp
 CREATE OR REPLACE FUNCTION update_timestamp_fnc()
 RETURN TRIGGER AS $$
 BEGIN
@@ -90,3 +93,37 @@ CREATE TRIGGER update_users_update_at
 BEFORE UPDATE ON "Users"
 FOR EACH ROW
 EXECUTE FUNCTION update_timestamp_fnc();
+
+CREATE TRIGGER update_timestamp_fnc
+BEFORE UPDATE ON "Address"
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp_fnc();
+
+-- Función para validar formato de email
+CREATE OR REPLACE FUNCTION validate_email_format(email TEXT)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN email ~ '^[a-z0-9!#$%&''*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&''*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$';
+END;
+$$ LANGUAGE plpgsql;
+
+-- Función para validar email en trigger
+CREATE OR REPLACE FUNCTION validar_email()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NOT validate_email_format(NEW.email) THEN
+        RAISE EXCEPTION 'Invalid email format.';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM "Users" WHERE email = NEW.email) THEN
+        RAISE EXCEPTION 'Email already in use.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_email
+BEFORE INSERT OR UPDATE ON "Users"
+FOR EACH ROW
+EXECUTE FUNCTION validar_email();
