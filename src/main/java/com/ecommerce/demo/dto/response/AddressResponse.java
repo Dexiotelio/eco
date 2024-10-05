@@ -1,5 +1,6 @@
 package com.ecommerce.demo.dto.response;
 
+import com.ecommerce.demo.dto.request.AddressRequest;
 import com.ecommerce.demo.entities.Address;
 
 public class AddressResponse {
@@ -47,7 +48,7 @@ public class AddressResponse {
         }
     }
 
-    public static AddressResponse toAddressResponse(Address address) {
+    public static AddressResponse toAddressResponse(AddressRequest address) {
         return new Builder()
                 .street(address.getStreet())
                 .streetNumber(address.getStreetNumber())
