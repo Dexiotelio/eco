@@ -1,4 +1,4 @@
-package com.ecommerce.demo.repositories;
+package com.ecommerce.demo.repositories.interfaces;
 
 import com.ecommerce.demo.entities.User;
 import com.ecommerce.demo.util.Result;
