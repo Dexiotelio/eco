@@ -2,6 +2,7 @@ package com.ecommerce.demo.repositories;
 
 import com.ecommerce.demo.entities.User;
 import com.ecommerce.demo.enums.DatabaseError;
+import com.ecommerce.demo.repositories.interfaces.UserQueryRepository;
 import com.ecommerce.demo.util.Result;
 import io.vavr.control.Try;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class UserQueryRepositoryImpl implements UserQueryRepository{
+public class UserQueryRepositoryImpl implements UserQueryRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
