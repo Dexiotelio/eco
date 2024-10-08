@@ -37,6 +37,7 @@ public class User {
     }
 
     public static class Builder {
+        private Long id;
         private String firstName;
         private String lastName;
         private String userName;
@@ -49,6 +50,7 @@ public class User {
         private ZonedDateTime createdAt;
         private ZonedDateTime updatedAt;
 
+        public Builder id(Long id) { this.id = id; return this; }
         public Builder firstName(String firstName) { this.firstName = firstName; return this; }
         public Builder lastName(String lastName) { this.lastName = lastName; return this; }
         public Builder userName(String userName) { this.userName = userName; return this; }
@@ -182,7 +184,6 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", userName='" + userName + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", age=" + age +
                 ", gender=" + gender +
                 ", phones=" + phones +
