@@ -10,6 +10,7 @@ import com.ecommerce.demo.repositories.UserQueryRepositoryImpl;
 import com.ecommerce.demo.repositories.UserWriteRepositoryImpl;
 import com.ecommerce.demo.services.interfaces.UserWriteServices;
 import com.ecommerce.demo.util.Result;
+import com.ecommerce.demo.validation.UserValidation;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
