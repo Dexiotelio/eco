@@ -1,6 +1,7 @@
 package com.ecommerce.demo.repositories;
 
-import com.ecommerce.demo.entities.User;
+import com.ecommerce.demo.model.User;
+import com.ecommerce.demo.enums.BusinessError;
 import com.ecommerce.demo.enums.DatabaseError;
 import com.ecommerce.demo.repositories.interfaces.UserQueryRepository;
 import com.ecommerce.demo.util.Result;
@@ -53,5 +54,22 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
                 .map(Result::success)
                 .recover(e -> Result.failure(
                         DatabaseError.QUERY_EXECUTION_ERROR.getMessage() + ": " + e.getMessage()));
+    }
+
+    @Override
+    public Try<Result<User>> findByUsername(String username) {
+        String sql = "SELECT id, username, password, email FROM \"Users\" WHERE username = ? LIMIT 1";
+
+        return Try.of(() ->
+                Optional.ofNullable(
+                        jdbcTemplate.queryForObject(sql, new Object[]{username}, (rs, rowNum) -> new User.Builder()
+                                .id(rs.getLong("id"))
+                                .userName(rs.getString("username"))
+                                .password(rs.getString("password"))
+                                .email(rs.getString("email"))
+                                .build())
+                ).map(Result::success)
+                .orElseGet(() -> Result.failure(BusinessError.USER_NOT_FOUND.getMessage()))
+        ).recover(e -> Result.failure("Database error: " + e.getMessage()));
     }
 }
