@@ -33,11 +33,6 @@ public class UserValidation {
                 req -> isLengthValid(request.getUserName(), 3, 50),
                 UserErrorCode.USER_USERNAME_LENGTH_FAILURE.getMessage()
         );
-        // Add validation rules for password length
-        validation.addValidationRule(
-                req -> isLengthValid(request.getPassword(), 10, 30),
-                UserErrorCode.USER_PASSWORD_LENGTH_FAILURE.getMessage()
-        );
         // Add validation rules for phone size
         validation.addValidationRule(
                 req -> validatePhonesSize(request.getPhones()),
@@ -50,12 +45,12 @@ public class UserValidation {
         );
         // Add validation rules for gender
         validation.addValidationRule(
-                req -> validateContent(request.getGender()),
+                req -> validateContentGender(request.getGender()),
                 UserErrorCode.USER_GENDER_FAILURE.getMessage()
         );
         // Add validation rules for role
         validation.addValidationRule(
-                req -> validateContent(request.getRole()),
+                req -> validateContentRole(request.getRole()),
                 UserErrorCode.USER_ROLE_FAILURE.getMessage()
         );
         // Add validation rules for email format
@@ -72,6 +67,11 @@ public class UserValidation {
         validation.addValidationRule(
                 req -> isAddressValid(request.getAddress()),
                 UserErrorCode.USER_ADDRESS_EMPTY.getMessage()
+        );
+        // Add validation rules for password
+        validation.addValidationRule(
+                req -> isPasswordValid(request.getPassword(), 14),
+                UserErrorCode.USER_PASSWORD_COMPLEXITY_FAILURE.getMessage()
         );
         // Validate the UserRequest and return the result
         return validation.validate(request);
@@ -98,13 +98,13 @@ public class UserValidation {
     }
 
     // Method to validate that the gender is not null
-    private static boolean validateContent(Gender gender) {
+    private static boolean validateContentGender(Gender gender) {
         return gender != null; // Ensure gender is provided
     }
 
     // Method to validate that the role is not null
-    private static boolean validateContent(Role role) {
-        return role != null; // Ensure role is provided
+    private static boolean validateContentRole(Set<Role> role) {
+        return role != null && !role.isEmpty(); // Ensure role is provided
     }
 
     // Method to validate the email format
@@ -120,5 +120,13 @@ public class UserValidation {
     // Method to validate that the address is not empty
     private static boolean isAddressValid(Set<AddressRequest> address) {
         return address != null && !address.isEmpty(); // Ensure address is provided
+    }
+
+    private static boolean isPasswordValid(String password, int min) {
+        return password.length() >= min &&
+                password.matches(".*[a-z].*") &&
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*[0-9].*") &&
+                password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*");
     }
 }
