@@ -4,7 +4,7 @@ import com.ecommerce.demo.dto.request.AddressRequest;
 import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.dto.response.AddressResponse;
 import com.ecommerce.demo.dto.response.UserResponse;
-import com.ecommerce.demo.entities.User;
+import com.ecommerce.demo.model.User;
 import com.ecommerce.demo.enums.UserErrorCode;
 import com.ecommerce.demo.repositories.UserQueryRepositoryImpl;
 import com.ecommerce.demo.repositories.UserWriteRepositoryImpl;
@@ -15,6 +15,7 @@ import io.vavr.control.Try;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,20 +29,23 @@ public class UserWriteServicesImpl implements UserWriteServices {
     private final UserWriteRepositoryImpl userWriteRepository;
     private final UserQueryRepositoryImpl userQueryRepository;
     private final AddressWriteServicesImpl addressWriteServices;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     // Constructor that injects the required repositories and services
     @Autowired
     public UserWriteServicesImpl(UserWriteRepositoryImpl userWriteRepository,
                                  UserQueryRepositoryImpl userQueryRepository,
-                                 AddressWriteServicesImpl addressWriteServices) {
+                                 AddressWriteServicesImpl addressWriteServices,
+                                 BCryptPasswordEncoder passwordEncoder) {
         this.userWriteRepository = userWriteRepository;
         this.userQueryRepository = userQueryRepository;
         this.addressWriteServices = addressWriteServices;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional // Ensures that the method is executed within a transaction
-    public Result<UserResponse> create(UserRequest request) {
+    public Result<UserResponse> registerUser(UserRequest request) {
         // Validate the user request
         Either<Set<String>, UserRequest> userValidation = UserValidation.validateUserRequest(request);
         if (userValidation.isLeft()) {
@@ -77,6 +81,7 @@ public class UserWriteServicesImpl implements UserWriteServices {
 
         // Create a new user from the request
         User user = User.toUser(request);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         Result<Long> userCreationResult = userWriteRepository.create(user);
         if (userCreationResult.isFailure()) {
             logger.error("Error al crear el usuario: {}", userCreationResult.getErrors());
