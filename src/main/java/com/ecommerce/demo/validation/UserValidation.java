@@ -1,6 +1,7 @@
-package com.ecommerce.demo.services;
+package com.ecommerce.demo.validation;
 
 import com.ecommerce.demo.dto.request.AddressRequest;
+import com.ecommerce.demo.dto.request.RegisterRequest;
 import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.enums.Gender;
 import com.ecommerce.demo.enums.Role;
@@ -15,8 +16,8 @@ public class UserValidation {
     private UserValidation() {}
 
     // Method to validate a UserRequest object
-    public static Either<Set<String>, UserRequest> validateUserRequest(UserRequest request) {
-        Dictionary<UserRequest> validation = new Dictionary<>(); // Create a new Dictionary for validation rules
+    public static Either<Set<String>, RegisterRequest> validateUserRequest(RegisterRequest request) {
+        Dictionary<RegisterRequest> validation = new Dictionary<>(); // Create a new Dictionary for validation rules
 
         // Add validation rules for first name length
         validation.addValidationRule(
@@ -109,7 +110,7 @@ public class UserValidation {
 
     // Method to validate the email format
     private static boolean validateEmail(String mail) {
-        return mail.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"); // Check if email matches the regex
+        return mail.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z]{2,6}$");// Check if email matches the regex
     }
 
     // Method to validate that the age is at least 18
