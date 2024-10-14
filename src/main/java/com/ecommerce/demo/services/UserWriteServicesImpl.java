@@ -20,7 +20,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 // Service implementation for user writing operations
 @Service
@@ -92,16 +95,22 @@ public class UserWriteServicesImpl implements UserWriteServices {
 
         Long userId = userCreationResult.getValue();
         logger.info("Usuario creado con éxito: ID {}", userId);
-        // Create addresses associated with the user
-        for (AddressRequest addressRequest : request.getAddress()) {
-            Result<AddressResponse> addressResponseResult = addressWriteServices.create(userId, addressRequest);
-            if (addressResponseResult.isFailure()) {
-                // Uncomment to delete user if address creation fails
-                String errorsMessages = String.join(", ", addressResponseResult.getErrors());
-                logger.error("Error al crear la dirección para el usuario ID {}: {}", userId, errorsMessages);
-                return Result.failure(String.format(
-                        UserErrorCode.USER_ADDRESS_CREATION_FAILURE.getMessage(), errorsMessages));
-            }
+        // Create addresses associated with the user in parallel
+        List<Result<AddressResponse>> addressResults = request.getAddress().parallelStream()
+                .map(addressRequest -> addressWriteServices.create(userId, addressRequest))
+                .toList();
+
+        // Collect any errors from address creation
+        Set<String> addressErrors = addressResults.stream()
+                .filter(Result::isFailure)
+                .flatMap(addressResult -> addressResult.getErrors().stream())
+                .collect(Collectors.toSet());
+
+        if (!addressErrors.isEmpty()) {
+            logger.error("Errores al crear direcciones para el usuario ID {}: {}", userId, addressErrors);
+            return Result.failure(String.format(
+                    UserErrorCode.USER_ADDRESS_CREATION_FAILURE.getMessage(),
+                    String.join(", ", addressErrors)));
         }
 
         // Convert the user entity to response format and return success
