@@ -8,7 +8,8 @@ public enum UserErrorCode {
     USER_FIRSTNAME_LENGTH_FAILURE("First name must be between 3 and 50 characters."),
     USER_LASTNAME_LENGTH_FAILURE("Last name must be between 3 and 50 characters."),
     USER_USERNAME_LENGTH_FAILURE("User name must be between 3 and 50 characters."),
-    USER_PASSWORD_LENGTH_FAILURE("Password must be at least 10 characters long."),
+    USER_PASSWORD_COMPLEXITY_FAILURE("The password must be at least 14 characters long, " +
+            "contain at least one lower case letter, one upper case letter, one number and one special character."),
     USER_GENDER_FAILURE("Gender must be 'male', 'female', or 'other'."),
     USER_ROLE_FAILURE("Role must be 'client', 'admin', or 'visitor'."),
     USER_PHONES_FAILURE("At least one phone number is required. You must provide between 1 and 2 phone numbers."),
