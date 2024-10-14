@@ -2,10 +2,12 @@ package com.ecommerce.demo.controller;
 
 import com.ecommerce.demo.dto.error.ErrorResponse;
 import com.ecommerce.demo.dto.request.LoginRequest;
+import com.ecommerce.demo.dto.request.RegisterRequest;
 import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.dto.response.UserResponse;
 import com.ecommerce.demo.services.UserWriteServicesImpl;
 import com.ecommerce.demo.util.Result;
+import jdk.jfr.Registered;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRequest request) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         logger.info("Attempting to register user: {}", request.getUserName());
 
         // Call the service to create the user and store the response
