@@ -1,6 +1,6 @@
 package com.ecommerce.demo.services;
 
-import com.ecommerce.demo.dto.request.AddressRequest;
+import com.ecommerce.demo.dto.request.RegisterRequest;
 import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.dto.response.AddressResponse;
 import com.ecommerce.demo.dto.response.UserResponse;
@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 // Service implementation for user writing operations
@@ -49,9 +48,9 @@ public class UserWriteServicesImpl implements UserWriteServices {
 
     @Override
     @Transactional // Ensures that the method is executed within a transaction
-    public Result<UserResponse> registerUser(UserRequest request) {
+    public Result<UserResponse> registerUser(RegisterRequest request) {
         // Validate the user request
-        Either<Set<String>, UserRequest> userValidation = UserValidation.validateUserRequest(request);
+        Either<Set<String>, RegisterRequest> userValidation = UserValidation.validateUserRequest(request);
         if (userValidation.isLeft()) {
             logger.warn("Errores de validación para el usuario: {}", userValidation.getLeft());
             return Result.failure(userValidation.getLeft()); // Return validation errors if present
@@ -120,18 +119,12 @@ public class UserWriteServicesImpl implements UserWriteServices {
     }
 
     @Override
-    @Transactional // Ensures that the method is executed within a transaction
     public Result<UserResponse> update(UserRequest request) {
-        User user = User.toUser(request); // Convert request to user entity
-        UserResponse userResponse = UserResponse.toUserResponse(user); // Convert user entity to response format
-        return Result.success(userResponse); // Return success result
+        return null;
     }
 
     @Override
-    @Transactional // Ensures that the method is executed within a transaction
     public Result<UserResponse> delete(UserRequest request) {
-        User user = User.toUser(request); // Convert request to user entity
-        UserResponse userResponse = UserResponse.toUserResponse(user); // Convert user entity to response format
-        return Result.success(userResponse); // Return success result
+        return null;
     }
 }
