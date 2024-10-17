@@ -110,7 +110,7 @@ public class UserValidation {
 
     // Method to validate the email format
     private static boolean validateEmail(String mail) {
-        return mail.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z]{2,6}$");// Check if email matches the regex
+        return mail.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"); // Check if email matches the regex
     }
 
     // Method to validate that the age is at least 18
