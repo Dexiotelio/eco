@@ -18,7 +18,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse("INTERNAL_SERVER_ERROR", null, "An unexpected error occurred.", null));
+                .body(new ErrorResponse("INTERNAL_SERVER_ERROR", null,
+                        "An unexpected error occurred.", null));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -36,7 +37,8 @@ public class GlobalExceptionHandler {
 
         // respuesta genérica
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                new ErrorResponse("INVALID_INPUT", null, "Entrada inválida.", null)
+                new ErrorResponse("INVALID_INPUT", null, "Entrant invalid.",
+                        new ErrorResponse.ErrorDetails(providedValue, null))
         );
     }
 
