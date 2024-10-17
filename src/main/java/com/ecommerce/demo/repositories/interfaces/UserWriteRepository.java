@@ -1,6 +1,6 @@
 package com.ecommerce.demo.repositories.interfaces;
 
-import com.ecommerce.demo.entities.User;
+import com.ecommerce.demo.model.User;
 import com.ecommerce.demo.util.Result;
 
 public interface UserWriteRepository {
