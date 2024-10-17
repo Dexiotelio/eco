@@ -1,6 +1,6 @@
 package com.ecommerce.demo.dto.response;
 
-import com.ecommerce.demo.entities.User;
+import com.ecommerce.demo.model.User;
 import com.ecommerce.demo.enums.Gender;
 
 import java.time.ZonedDateTime;
