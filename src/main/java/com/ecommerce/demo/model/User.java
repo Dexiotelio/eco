@@ -1,5 +1,6 @@
-package com.ecommerce.demo.entities;
+package com.ecommerce.demo.model;
 
+import com.ecommerce.demo.dto.request.RegisterRequest;
 import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.enums.Gender;
 import com.ecommerce.demo.enums.Role;
@@ -18,7 +19,7 @@ public class User {
     private Integer age;
     private Gender gender;
     private Set<String> phones;
-    private Role role;
+    private Set<Role> role;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
@@ -46,7 +47,7 @@ public class User {
         private Integer age;
         private Gender gender;
         private Set<String> phones;
-        private Role role;
+        private Set<Role> role;
         private ZonedDateTime createdAt;
         private ZonedDateTime updatedAt;
 
@@ -59,14 +60,14 @@ public class User {
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
         public Builder phones(Set<String> phones) { this.phones = phones; return this; }
-        public Builder role(Role role) { this.role = role; return this; }
+        public Builder role(Set<Role> role) { this.role = role; return this; }
 
         public User build() {
             return new User(this);
         }
     }
 
-    public static User toUser(UserRequest request) {
+    public static User toUser(RegisterRequest request) {
         return new Builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -152,11 +153,11 @@ public class User {
         this.phones = phones;
     }
 
-    public Role getRole() {
+    public Set<Role> getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(Set<Role> role) {
         this.role = role;
     }
 
