@@ -1,5 +1,6 @@
 package com.ecommerce.demo.services;
 
+import com.ecommerce.demo.dto.request.AddressRequest;
 import com.ecommerce.demo.dto.request.RegisterRequest;
 import com.ecommerce.demo.dto.request.UserRequest;
 import com.ecommerce.demo.dto.response.AddressResponse;
@@ -18,11 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 // Service implementation for user writing operations
 @Service
@@ -33,89 +32,89 @@ public class UserWriteServicesImpl implements UserWriteServices {
     private final UserQueryRepositoryImpl userQueryRepository;
     private final AddressWriteServicesImpl addressWriteServices;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final TransactionTemplate transactionTemplate;
 
     // Constructor that injects the required repositories and services
     @Autowired
     public UserWriteServicesImpl(UserWriteRepositoryImpl userWriteRepository,
                                  UserQueryRepositoryImpl userQueryRepository,
                                  AddressWriteServicesImpl addressWriteServices,
-                                 BCryptPasswordEncoder passwordEncoder) {
+                                 BCryptPasswordEncoder passwordEncoder,
+                                 TransactionTemplate transactionTemplate) {
         this.userWriteRepository = userWriteRepository;
         this.userQueryRepository = userQueryRepository;
         this.addressWriteServices = addressWriteServices;
         this.passwordEncoder = passwordEncoder;
+        this.transactionTemplate = transactionTemplate;
     }
 
     @Override
-    @Transactional // Ensures that the method is executed within a transaction
     public Result<UserResponse> registerUser(RegisterRequest request) {
-        // Validate the user request
-        Either<Set<String>, RegisterRequest> userValidation = UserValidation.validateUserRequest(request);
-        if (userValidation.isLeft()) {
-            logger.warn("Errores de validación para el usuario: {}", userValidation.getLeft());
-            return Result.failure(userValidation.getLeft()); // Return validation errors if present
-        }
+        return transactionTemplate.execute(status -> {
+            // Validate the user request
+            Either<Set<String>, RegisterRequest> userValidation = UserValidation.validateUserRequest(request);
+            if (userValidation.isLeft()) {
+                logger.warn("Errores de validación para el usuario: {}", userValidation.getLeft());
+                return Result.failure(userValidation.getLeft()); // Return validation errors if present
+            }
 
-        // Check if the user already exists based on the email
-        Try<Result<Boolean>> userExists = userQueryRepository.exists(request.getEmail());
-        if (userExists.isFailure()) {
-            logger.error("Error al verificar la existencia del usuario: {}", userExists.getCause().getMessage());
-            return Result.failure(userExists.getCause().getMessage()); // Handle failure in querying
-        }
+            // Check if the user already exists based on the email
+            Try<Result<Boolean>> userExists = userQueryRepository.exists(request.getEmail());
+            if (userExists.isFailure()) {
+                logger.error("Error al verificar la existencia del usuario: {}", userExists.getCause().getMessage());
+                return Result.failure(userExists.getCause().getMessage()); // Handle failure in querying
+            }
 
-        Result<Boolean> userExistsResult = userExists.get();
-        if (userExistsResult.isSuccess() && Boolean.TRUE.equals(userExistsResult.getValue())) {
-            logger.warn("El usuario ya existe: {}", request.getEmail());
-            return Result.failure(UserErrorCode.USER_ALREADY_EXISTS.getMessage()); // Return error if user exists
-        }
+            Result<Boolean> userExistsResult = userExists.get();
+            if (userExistsResult.isSuccess() && Boolean.TRUE.equals(userExistsResult.getValue())) {
+                logger.warn("El usuario ya existe: {}", request.getEmail());
+                return Result.failure(UserErrorCode.USER_ALREADY_EXISTS.getMessage()); // Return error if user exists
+            }
 
-        // Check if the username already exists
-        Try<Result<Boolean>> usernameExists = userQueryRepository.existsUsername(request.getUserName());
-        if (usernameExists.isFailure()) {
-            logger.error("Error al verificar la existencia del nombre de usuario: {}", usernameExists.getCause().getMessage());
-            return Result.failure(usernameExists.getCause().getMessage()); // Handle failure in querying
-        }
+            // Check if the username already exists
+            Try<Result<Boolean>> usernameExists = userQueryRepository.existsUsername(request.getUserName());
+            if (usernameExists.isFailure()) {
+                logger.error("Error al verificar la existencia del nombre de usuario: {}", usernameExists.getCause().getMessage());
+                return Result.failure(usernameExists.getCause().getMessage()); // Handle failure in querying
+            }
 
-        Result<Boolean> usernameExistsResult = usernameExists.get();
-        if (usernameExistsResult.isSuccess() && Boolean.TRUE.equals(usernameExistsResult.getValue())) {
-            logger.warn("El nombre de usuario ya existe: {}", request.getUserName());
-            return Result.failure(UserErrorCode.USER_USERNAME_EXISTS.getMessage()); // Return error if username exists
-        }
+            Result<Boolean> usernameExistsResult = usernameExists.get();
+            if (usernameExistsResult.isSuccess() && Boolean.TRUE.equals(usernameExistsResult.getValue())) {
+                logger.warn("El nombre de usuario ya existe: {}", request.getUserName());
+                return Result.failure(UserErrorCode.USER_USERNAME_EXISTS.getMessage()); // Return error if username exists
+            }
 
-        // Create a new user from the request
-        User user = User.toUser(request);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Result<Long> userCreationResult = userWriteRepository.create(user);
-        if (userCreationResult.isFailure()) {
-            logger.error("Error al crear el usuario: {}", userCreationResult.getErrors());
-            return Result.failure(UserErrorCode.USER_CREATION_FAILURE.getMessage() + ": "
-                    + String.join(", ", userCreationResult.getErrors())); // Return error if user creation fails
-        }
+            // Create a new user from the request
+            User user = User.toUser(request);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            Result<Long> userCreationResult = userWriteRepository.create(user);
+            if (userCreationResult.isFailure()) {
+                logger.error("Error al crear el usuario: {}", userCreationResult.getErrors());
+                status.setRollbackOnly();
+                return Result.failure(UserErrorCode.USER_CREATION_FAILURE.getMessage() + ": "
+                        + String.join(", ", userCreationResult.getErrors())); // Return error if user creation fails
+            }
 
-        Long userId = userCreationResult.getValue();
-        logger.info("Usuario creado con éxito: ID {}", userId);
-        // Create addresses associated with the user in parallel
-        List<Result<AddressResponse>> addressResults = request.getAddress().parallelStream()
-                .map(addressRequest -> addressWriteServices.create(userId, addressRequest))
-                .toList();
+            Long userId = userCreationResult.getValue();
+            logger.info("Usuario creado con éxito: ID {}", userId);
+            // Create addresses associated with the user
+            for (AddressRequest addressRequest: request.getAddress()) {
+                Result<AddressResponse> addressResponseResult = addressWriteServices.create(userId, addressRequest);
+                if (addressResponseResult.isFailure()) {
+                    logger.error(
+                            "Error al crear la dirección para el usuario ID {}: {}", userId, addressResponseResult.getErrors());
+                    status.setRollbackOnly();
+                    return Result.failure(String.format(
+                            UserErrorCode.USER_ADDRESS_CREATION_FAILURE.getMessage(),
+                            String.join(", ", addressResponseResult.getErrors())));
+                }
+            }
 
-        // Collect any errors from address creation
-        Set<String> addressErrors = addressResults.stream()
-                .filter(Result::isFailure)
-                .flatMap(addressResult -> addressResult.getErrors().stream())
-                .collect(Collectors.toSet());
-
-        if (!addressErrors.isEmpty()) {
-            logger.error("Errores al crear direcciones para el usuario ID {}: {}", userId, addressErrors);
-            return Result.failure(String.format(
-                    UserErrorCode.USER_ADDRESS_CREATION_FAILURE.getMessage(),
-                    String.join(", ", addressErrors)));
-        }
-
-        // Convert the user entity to response format and return success
-        UserResponse userResponse = UserResponse.toUserResponse(user);
-        logger.info("Proceso de creación de usuario finalizado con éxito: {}", userResponse);
-        return Result.success(userResponse);
+            // Convert the user entity to response format and return success
+            UserResponse userResponse = UserResponse.toUserResponse(user);
+            logger.info("Proceso de creación de usuario finalizado con éxito: {}", userResponse);
+            return Result.success(userResponse);
+        });
     }
 
     @Override
