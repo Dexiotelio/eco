@@ -27,7 +27,7 @@ public class UserRequest {
     private final String email;
 
     @NotBlank(message = "Password is required")
-    @Size(min = 10, message = "Password must be at least 10 characters long")
+    @Size(min = 12, message = "Password must be at least 12 characters long")
     private final String password;
 
     @NotNull(message = "Age is required")
@@ -41,10 +41,10 @@ public class UserRequest {
     private final Set<String> phones;
 
     @NotNull(message = "Role is required")
-    private final Role role;
+    private final Set<Role> role;
 
     @NotNull(message = "Address is required")
-    private final Set<AddressRequest> addresses;
+    private final Set<AddressRequest> address;
 
     @JsonCreator
     public UserRequest(
@@ -56,8 +56,8 @@ public class UserRequest {
             @JsonProperty("age") Integer age,
             @JsonProperty("gender") Gender gender,
             @JsonProperty("phones") Set<String> phones,
-            @JsonProperty("role") Role role,
-            @JsonProperty("addresses") Set<AddressRequest> addresses) {
+            @JsonProperty("role") Set<Role> role,
+            @JsonProperty("addresses") Set<AddressRequest> address) {
         this.firstName = firstName != null ? firstName.trim() : null;
         this.lastName = lastName != null ? lastName.trim() : null;
         this.userName = userName != null ? userName.trim() : null;
@@ -67,7 +67,7 @@ public class UserRequest {
         this.gender = gender;
         this.phones = phones;
         this.role = role;
-        this.addresses = addresses;
+        this.address = address;
     }
 
     public UserRequest(Builder builder) {
@@ -80,7 +80,7 @@ public class UserRequest {
         this.gender = builder.gender;
         this.phones = builder.phones;
         this.role = builder.role;
-        this.addresses = builder.addresses;
+        this.address = builder.address;
     }
 
     public static class Builder {
@@ -92,8 +92,8 @@ public class UserRequest {
         private Integer age;
         private Gender gender;
         private Set<String> phones;
-        private Role role;
-        private Set<AddressRequest> addresses;
+        private Set<Role> role;
+        private Set<AddressRequest> address;
 
         public Builder firstName(String firstName) { this.firstName = firstName; return this; }
         public Builder lastName(String lastName) { this.lastName = lastName; return this; }
@@ -103,8 +103,8 @@ public class UserRequest {
         public Builder age(Integer age) { this.age = age; return this; }
         public Builder gender(Gender gender) { this.gender = gender; return this; }
         public Builder phones(Set<String> phones) { this.phones = phones; return this; }
-        public Builder role(Role role) { this.role = role; return this; }
-        public Builder addresses(Set<AddressRequest> addresses) { this.addresses = addresses; return this; }
+        public Builder role(Set<Role> role) { this.role = role; return this; }
+        public Builder addresses(Set<AddressRequest> address) { this.address = address; return this; }
 
         public UserRequest build() {
             return new UserRequest(this);
@@ -135,8 +135,8 @@ public class UserRequest {
     public Set<String> getPhones() {
         return phones;
     }
-    public Role getRole() { return role; }
-    public Set<AddressRequest> getAddress() { return addresses; }
+    public Set<Role> getRole() { return role; }
+    public Set<AddressRequest> getAddress() { return address; }
 
     @Override
     public String toString() {
@@ -150,7 +150,7 @@ public class UserRequest {
                 ", gender=" + gender +
                 ", phones=" + phones +
                 ", role=" + role +
-                ", address=" + addresses +
+                ", address=" + address +
                 '}';
     }
 }
